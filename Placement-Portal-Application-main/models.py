@@ -1,4 +1,4 @@
-from app import db
+from db import db
 from datetime import datetime
 
 class Admin(db.Model):
@@ -24,7 +24,7 @@ class Company(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    job_drives = db.relationship("JobDrive", backref="company", lazy=True)
+    job_positions = db.relationship("JobPosition", backref="company", lazy=True)
 
 
 
@@ -44,7 +44,7 @@ class Student(db.Model):
 
 
 
-class JobDrive(db.Model):
+class JobPosition(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     company_id = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False)
@@ -57,7 +57,7 @@ class JobDrive(db.Model):
     status = db.Column(db.String(20), default="Pending")
     # Pending / Approved / Closed
 
-    applications = db.relationship("Application", backref="job_drive", lazy=True)
+    applications = db.relationship("Application", backref="job_position", lazy=True)
 
 
 
@@ -66,7 +66,7 @@ class Application(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     student_id = db.Column(db.Integer, db.ForeignKey("student.id"), nullable=False)
-    job_drive_id = db.Column(db.Integer, db.ForeignKey("job_drive.id"), nullable=False)
+    job_position_id = db.Column(db.Integer, db.ForeignKey("job_position.id"), nullable=False)
 
     status = db.Column(db.String(20), default="Applied")
     # Applied / Shortlisted / Selected / Rejected
@@ -74,18 +74,27 @@ class Application(db.Model):
     applied_on = db.Column(db.DateTime, default=datetime.utcnow)
 
     __table_args__ = (
-        db.UniqueConstraint("student_id", "job_drive_id", name="unique_application"),
+        db.UniqueConstraint("student_id", "job_position_id", name="unique_application"),
     )
+    
+    placement = db.relationship("Placement", backref="application", uselist=False, lazy=True)
 
 
 
 class Placement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
-    student_id = db.Column(db.Integer, db.ForeignKey("student.id"), nullable=False)
-    company_id = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False)
-    job_title = db.Column(db.String(100))
-
+    application_id = db.Column(db.Integer, db.ForeignKey("application.id"), nullable=False)
+    
+    # We can keep these for easy querying, but they are redundant if we have application_id
+    # However, keeping them might be useful for analytics or simple joins. 
+    # Let's keep them as per the user's implicit request for "Student-Application, Application-Placement" flow
+    # but strictly speaking, application already links to student and job_position (which links to company).
+    # To avoid data inconsistency, ideally we should just use application_id.
+    # But the prompt asked for "Create models/tables... Define relationships".
+    # I will rely on application_id for the core link.
+    
     placed_on = db.Column(db.DateTime, default=datetime.utcnow)
+
 
 
