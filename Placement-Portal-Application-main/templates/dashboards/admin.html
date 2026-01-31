@@ -9,6 +9,14 @@
     <h1>Admin Dashboard</h1>
     <a href="{{ url_for('auth.logout') }}">Logout</a>
 
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
     {% endwith %}
 
     <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
