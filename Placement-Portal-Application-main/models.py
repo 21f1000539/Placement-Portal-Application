@@ -90,13 +90,7 @@ class Placement(db.Model):
 
     application_id = db.Column(db.Integer, db.ForeignKey("application.id"), nullable=False)
     
-    # We can keep these for easy querying, but they are redundant if we have application_id
-    # However, keeping them might be useful for analytics or simple joins. 
-    # Let's keep them as per the user's implicit request for "Student-Application, Application-Placement" flow
-    # but strictly speaking, application already links to student and job_position (which links to company).
-    # To avoid data inconsistency, ideally we should just use application_id.
-    # But the prompt asked for "Create models/tables... Define relationships".
-    # I will rely on application_id for the core link.
+    # This table might be redundant if we strictly use Application, but kept for clarity/analytics.
     
     placed_on = db.Column(db.DateTime, default=datetime.utcnow)
 

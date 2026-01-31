@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 from config import Config
-from db import db   # 👈 import db from db.py
+from db import db
 
 def create_app():
     app = Flask(__name__)
@@ -54,8 +54,7 @@ def create_app():
             company.is_approved = True
             flash(f"{company.name} approved.")
         elif action == "reject":
-            # Rejecting usually means deleting the registration request or keeping it unapproved?
-            # Prompt says "Approve and Reject... registration". Rejection often implies deletion of the request.
+        elif action == "reject":
             db.session.delete(company)
             flash(f"{company.name} rejected and removed.")
         elif action == "blacklist":
@@ -68,7 +67,6 @@ def create_app():
         db.session.commit()
         return redirect(request.referrer or url_for("manage_companies"))
 
-    # Only keeping this for backward compatibility if needed, but redundant with above
     @app.route("/admin/approve/<int:company_id>")
     @login_required("admin")
     def approve_company(company_id):
@@ -81,7 +79,6 @@ def create_app():
     def manage_students():
         search = request.args.get("search", "")
         if search:
-            # Search by name or email
             students = Student.query.filter(
                 (Student.name.ilike(f"%{search}%")) | (Student.email.ilike(f"%{search}%"))
             ).all()
@@ -144,7 +141,6 @@ def create_app():
              return render_template("unauthorized.html", message="Your account is awaiting admin approval.")
         
         jobs = JobPosition.query.filter_by(company_id=company_id).all()
-        # Count total applications received
         total_applications = 0
         for job in jobs:
             total_applications += len(job.applications)
@@ -177,17 +173,6 @@ def create_app():
                 experience=experience,
                 salary=salary,
                 status="Pending" 
-                # Let's verify status default in model. Model default is 'Pending'. 
-                # Does admin need to approve jobs? "Approve and Reject job postings... created by companies." -> YES.
-                # So default should be 'Pending' or 'Active'? 
-                # If Admin has to approve, it should probably be 'Pending'. 
-                # But User Prompt also says "Update job posting status (Active/Closed)".
-                # Let's keep default as 'Pending' (from model) for Admin workflow, but allow Company to close it later?
-                # Actually, "Approve and Reject job postings" implies Admin control.
-                # So newly created job is 'Pending'.
-                # Once approved, it becomes 'Approved' (or 'Active'?). 
-                # Model default is 'Pending'.
-                # I will let it be 'Pending'.
             )
             db.session.add(job)
             db.session.commit()
@@ -205,12 +190,7 @@ def create_app():
              flash("Unauthorized action.")
              return redirect(url_for("company_dashboard"))
         
-        # Valid statuses for company to toggle? Active/Closed.
-        # But system uses Pending/Approved/Rejected.
-        # Maybe 'Closed' is a state company can set.
-        if status in ["Closed", "Active"]: # If approved, they can close/re-open? Or just Close?
-             # Assuming 'Approved' acts as 'Active'. 
-             # Let's just update based on request if valid
+        if status in ["Closed", "Active"]: 
              job.status = status
              db.session.commit()
              flash(f"Job status updated to {status}.")
