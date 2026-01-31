@@ -188,6 +188,11 @@ def create_app():
     def apply_job(job_id):
         student_id = session.get("user_id")
         
+        job = JobPosition.query.get_or_404(job_id)
+        if job.status != "Approved":
+            flash("This job is not currently accepting applications.")
+            return redirect(url_for("student_jobs"))
+
         # Check if already applied
         existing = Application.query.filter_by(student_id=student_id, job_position_id=job_id).first()
         if existing:
@@ -230,8 +235,13 @@ def create_app():
     @app.route("/company/post_job", methods=["GET", "POST"])
     @login_required("company")
     def post_job():
+        company_id = session.get("user_id")
+        company = Company.query.get(company_id)
+        if not company.is_approved:
+             flash("Your account is not approved yet.")
+             return redirect(url_for("company_dashboard"))
+
         if request.method == "POST":
-            company_id = session.get("user_id")
             title = request.form["title"]
             description = request.form["description"]
             eligibility = request.form["eligibility"]
@@ -293,7 +303,7 @@ def create_app():
             flash("Unauthorized.")
             return redirect(url_for("company_dashboard"))
 
-        if status in ["Shortlisted", "Selected", "Rejected"]:
+        if status in ["Shortlisted", "Interview", "Selected", "Placed", "Rejected"]:
             application.status = status
             db.session.commit()
             flash(f"Application status updated to {status}")
@@ -302,8 +312,10 @@ def create_app():
         return redirect(request.referrer or url_for("company_applications"))
 
     @app.route("/student/profile/<int:student_id>")
-    @login_required("company")
     def view_student_profile(student_id):
+        if "role" not in session or session["role"] not in ["company", "admin"]:
+            return redirect(url_for("index"))
+            
         student = Student.query.get_or_404(student_id)
         return render_template("company/student_profile.html", student=student)
 

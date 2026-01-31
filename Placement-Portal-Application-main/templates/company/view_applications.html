@@ -43,17 +43,19 @@
                 <b>{{ app.status }}</b>
             </td>
             <td>
-                {% if app.status != 'Selected' and app.status != 'Rejected' %}
+                {% if app.status != 'Placed' and app.status != 'Rejected' %}
                 <a href="{{ url_for('update_application_status', app_id=app.id, status='Shortlisted') }}">Shortlist</a>
                 |
+                <a href="{{ url_for('update_application_status', app_id=app.id, status='Interview') }}">Interview</a> |
                 <a href="{{ url_for('update_application_status', app_id=app.id, status='Selected') }}">Select</a> |
+                <a href="{{ url_for('update_application_status', app_id=app.id, status='Placed') }}">Placed</a> |
                 <a href="{{ url_for('update_application_status', app_id=app.id, status='Rejected') }}">Reject</a>
                 {% else %}
                 Finalized
                 {% endif %}
             </td>
             <td>
-                <a href="{{ url_for('student_profile', student_id=app.student.id) }}">View Profile</a>
+                <a href="{{ url_for('view_student_profile', student_id=app.student.id) }}">View Profile</a>
             </td>
         </tr>
         {% endfor %}
