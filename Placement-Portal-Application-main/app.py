@@ -14,6 +14,9 @@ def create_app():
 
     from auth import auth_bp
     app.register_blueprint(auth_bp)
+    
+    from api import api_bp
+    app.register_blueprint(api_bp, url_prefix="/api")
 
     from decorators import login_required
 
