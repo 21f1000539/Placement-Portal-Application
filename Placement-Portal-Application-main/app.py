@@ -5,6 +5,10 @@ from db import db
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    
+    import os
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static/uploads/resumes')
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
     db.init_app(app)
 
@@ -54,7 +58,7 @@ def create_app():
             company.is_approved = True
             flash(f"{company.name} approved.")
         elif action == "reject":
-        elif action == "reject":
+
             db.session.delete(company)
             flash(f"{company.name} rejected and removed.")
         elif action == "blacklist":
@@ -131,6 +135,82 @@ def create_app():
     @login_required("student")
     def student_dashboard():
         return render_template("dashboards/student.html")
+
+    @app.route("/student/profile", methods=["GET", "POST"])
+    @login_required("student")
+    def student_profile():
+        student_id = session.get("user_id")
+        student = Student.query.get(student_id)
+        
+        if request.method == "POST":
+            student.name = request.form["name"]
+            student.department = request.form["department"]
+            student.cgpa = request.form["cgpa"]
+            
+            # Handle Resume Update
+            if 'resume' in request.files:
+                file = request.files['resume']
+                if file.filename != '':
+                    import os
+                    from werkzeug.utils import secure_filename
+                    filename = secure_filename(file.filename)
+                    # Ideally delete old resume text logic here, but for now just overwrite logic
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    student.resume = filename
+            
+            db.session.commit()
+            flash("Profile updated successfully.")
+            return redirect(url_for("student_profile"))
+            
+        return render_template("student/profile.html", student=student)
+
+    @app.route("/student/jobs")
+    @login_required("student")
+    def student_jobs():
+        search = request.args.get("search", "")
+        # Filter for Approved jobs only
+        query = JobPosition.query.filter_by(status="Approved")
+        
+        if search:
+            # Search by Title, Company Name, or Skills
+            # Join with Company to search by company name
+            query = query.join(Company).filter(
+                (JobPosition.title.ilike(f"%{search}%")) |
+                (Company.name.ilike(f"%{search}%")) |
+                (JobPosition.skills.ilike(f"%{search}%"))
+            )
+            
+        jobs = query.all()
+        return render_template("student/jobs.html", jobs=jobs)
+
+    @app.route("/student/apply/<int:job_id>")
+    @login_required("student")
+    def apply_job(job_id):
+        student_id = session.get("user_id")
+        
+        # Check if already applied
+        existing = Application.query.filter_by(student_id=student_id, job_position_id=job_id).first()
+        if existing:
+            flash("You have already applied for this job.")
+            return redirect(url_for("student_jobs"))
+            
+        new_app = Application(
+            student_id=student_id,
+            job_position_id=job_id,
+            status="Applied"
+        )
+        db.session.add(new_app)
+        db.session.commit()
+        
+        flash("Applied successfully!")
+        return redirect(url_for("student_my_applications"))
+
+    @app.route("/student/my_applications")
+    @login_required("student")
+    def student_my_applications():
+        student_id = session.get("user_id")
+        applications = Application.query.filter_by(student_id=student_id).all()
+        return render_template("student/my_applications.html", applications=applications)
 
     @app.route("/company/dashboard")
     @login_required("company")
@@ -223,7 +303,7 @@ def create_app():
 
     @app.route("/student/profile/<int:student_id>")
     @login_required("company")
-    def student_profile(student_id):
+    def view_student_profile(student_id):
         student = Student.query.get_or_404(student_id)
         return render_template("company/student_profile.html", student=student)
 

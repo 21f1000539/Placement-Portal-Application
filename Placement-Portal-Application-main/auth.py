@@ -15,13 +15,25 @@ def student_register():
             flash("Email already registered")
             return redirect(url_for("auth.student_register"))
 
+        resume_filename = None
+        if 'resume' in request.files:
+            file = request.files['resume']
+            if file.filename != '':
+                import os
+                from flask import current_app
+                from werkzeug.utils import secure_filename
+                
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+                resume_filename = filename
+
         student = Student(
             name=request.form["name"],
             email=email,
             password=generate_password_hash(request.form["password"]),
             department=request.form.get("department"),
             cgpa=request.form.get("cgpa"),
-            resume=request.form.get("resume")
+            resume=resume_filename
         )
 
         db.session.add(student)

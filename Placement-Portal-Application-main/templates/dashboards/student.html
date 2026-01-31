@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Student Dashboard</title>
+</head>
+
+<body>
+    <h1>Student Dashboard</h1>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+    <br><br>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <div style="margin-bottom: 20px;">
+        <h3>Menu</h3>
+        <ul>
+            <li><a href="{{ url_for('student_profile') }}">My Profile</a></li>
+            <li><a href="{{ url_for('student_jobs') }}">Search Jobs</a></li>
+            <li><a href="{{ url_for('student_my_applications') }}">My Applications</a></li>
+        </ul>
+    </div>
+</body>
+
+</html>
