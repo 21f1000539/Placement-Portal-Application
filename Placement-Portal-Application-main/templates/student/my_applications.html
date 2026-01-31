@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Applications</title>
+</head>
+
+<body>
+    <h1>My Applications</h1>
+    <a href="{{ url_for('student_dashboard') }}">Back to Dashboard</a>
+    <br><br>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <table border="1">
+        <tr>
+            <th>Company</th>
+            <th>Role</th>
+            <th>Applied On</th>
+            <th>Status</th>
+        </tr>
+        {% for app in applications %}
+        <tr>
+            <td>{{ app.job_position.company.name }}</td>
+            <td>{{ app.job_position.title }}</td>
+            <td>{{ app.applied_on.strftime('%Y-%m-%d') }}</td>
+            <td>
+                {% if app.status == 'Selected' %}
+                <span style="color:green; font-weight:bold;">Selected</span>
+                {% elif app.status == 'Rejected' %}
+                <span style="color:red;">Rejected</span>
+                {% else %}
+                {{ app.status }}
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">You haven't applied to any jobs yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

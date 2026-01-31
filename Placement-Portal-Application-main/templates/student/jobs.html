@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Search Jobs</title>
+</head>
+
+<body>
+    <h1>Search Jobs</h1>
+    <a href="{{ url_for('student_dashboard') }}">Back to Dashboard</a>
+    <br><br>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <form method="GET">
+        <input type="text" name="search" placeholder="Search by title, company, skills...">
+        <button type="submit">Search</button>
+    </form>
+    <br>
+
+    <table border="1">
+        <tr>
+            <th>Role</th>
+            <th>Company</th>
+            <th>DeadLine</th>
+            <th>Skills</th>
+            <th>Experience</th>
+            <th>Salary</th>
+            <th>Action</th>
+        </tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.title }}</td>
+            <td>{{ job.company.name }}</td>
+            <td>{{ job.deadline }}</td>
+            <td>{{ job.skills }}</td>
+            <td>{{ job.experience }}</td>
+            <td>{{ job.salary }}</td>
+            <td>
+                <a href="{{ url_for('apply_job', job_id=job.id) }}">Apply Now</a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="7">No active jobs found.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
