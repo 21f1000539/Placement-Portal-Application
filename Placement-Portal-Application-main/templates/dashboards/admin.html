@@ -9,15 +9,25 @@
     <h1>Admin Dashboard</h1>
     <a href="{{ url_for('auth.logout') }}">Logout</a>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
     {% endwith %}
+
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+        <h3>Statistics</h3>
+        <p>Total Companies: {{ stats.companies }}</p>
+        <p>Total Students: {{ stats.students }}</p>
+        <p>Total Jobs: {{ stats.jobs }}</p>
+        <p>Total Applications: {{ stats.applications }}</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3>Management</h3>
+        <ul>
+            <li><a href="{{ url_for('manage_companies') }}">Manage Companies</a></li>
+            <li><a href="{{ url_for('manage_students') }}">Manage Students</a></li>
+            <li><a href="{{ url_for('manage_jobs') }}">Manage Jobs</a></li>
+            <li><a href="{{ url_for('view_applications') }}">View Applications</a></li>
+        </ul>
+    </div>
 
     <h2>Pending Company Approvals</h2>
     {% if companies %}

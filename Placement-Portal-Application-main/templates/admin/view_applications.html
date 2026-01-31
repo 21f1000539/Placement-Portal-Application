@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>View Applications</title>
+</head>
+
+<body>
+    <h1>All Applications</h1>
+    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    <br><br>
+
+    <table border="1">
+        <tr>
+            <th>Student</th>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Applied On</th>
+        </tr>
+        {% for app in applications %}
+        <tr>
+            <td>{{ app.student.name }}</td>
+            <td>{{ app.job_position.title }}</td>
+            <td>{{ app.job_position.company.name }}</td>
+            <td>{{ app.status }}</td>
+            <td>{{ app.applied_on }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

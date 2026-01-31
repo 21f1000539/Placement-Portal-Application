@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Manage Jobs</title>
+</head>
+
+<body>
+    <h1>Manage Jobs</h1>
+    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    <br><br>
+
+    <table border="1">
+        <tr>
+            <th>Company</th>
+            <th>Title</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.company.name }}</td>
+            <td>{{ job.title }}</td>
+            <td>{{ job.deadline }}</td>
+            <td>{{ job.status }}</td>
+            <td>
+                {% if job.status == 'Pending' %}
+                <a href="{{ url_for('job_action', job_id=job.id, action='approve') }}">Approve</a> |
+                <a href="{{ url_for('job_action', job_id=job.id, action='reject') }}">Reject</a>
+                {% else %}
+                {{ job.status }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

@@ -39,6 +39,10 @@ def student_login():
         student = Student.query.filter_by(email=request.form["email"]).first()
 
         if student and check_password_hash(student.password, request.form["password"]):
+            if not student.is_active:
+                flash("Account deactivated by admin.")
+                return redirect(url_for("auth.student_login"))
+            
             session["user_id"] = student.id
             session["role"] = "student"
             return redirect(url_for("student_dashboard"))

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Manage Students</title>
+</head>
+
+<body>
+    <h1>Manage Students</h1>
+    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    <br><br>
+
+    <form method="GET">
+        <input type="text" name="search" placeholder="Search by name or email"
+            value="{{ request.args.get('search', '') }}">
+        <button type="submit">Search</button>
+    </form>
+    <br>
+
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>CGPA</th>
+            <th>Active</th>
+            <th>Action</th>
+        </tr>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.name }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.department }}</td>
+            <td>{{ student.cgpa }}</td>
+            <td>
+                {% if student.is_active %}
+                <span style="color:green;">Yes</span>
+                {% else %}
+                <span style="color:red;">No</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if student.is_active %}
+                <a href="{{ url_for('student_action', student_id=student.id, action='deactivate') }}">Deactivate</a>
+                {% else %}
+                <a href="{{ url_for('student_action', student_id=student.id, action='activate') }}">Activate</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

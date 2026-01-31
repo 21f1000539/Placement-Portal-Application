@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Manage Companies</title>
+</head>
+
+<body>
+    <h1>Manage Companies</h1>
+    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+    <br><br>
+
+    <form method="GET">
+        <input type="text" name="search" placeholder="Search by name" value="{{ request.args.get('search', '') }}">
+        <button type="submit">Search</button>
+    </form>
+    <br>
+
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Website</th>
+            <th>Approval</th>
+            <th>Blacklist</th>
+            <th>Action</th>
+        </tr>
+        {% for company in companies %}
+        <tr>
+            <td>{{ company.name }}</td>
+            <td>{{ company.email }}</td>
+            <td>{{ company.website }}</td>
+            <td>
+                {% if company.is_approved %}
+                <span style="color:green;">Approved</span>
+                {% else %}
+                <span style="color:orange;">Pending</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if company.is_blacklisted %}
+                <span style="color:red;">Yes</span>
+                {% else %}
+                No
+                {% endif %}
+            </td>
+            <td>
+                {% if not company.is_approved %}
+                <a href="{{ url_for('approve_company_action', company_id=company.id, action='approve') }}">Approve</a> |
+                <a href="{{ url_for('approve_company_action', company_id=company.id, action='reject') }}"
+                    onclick="return confirm('Delete this registration?')">Reject</a>
+                {% endif %}
+
+                {% if company.is_approved and not company.is_blacklisted %}
+                | <a
+                    href="{{ url_for('approve_company_action', company_id=company.id, action='blacklist') }}">Blacklist</a>
+                {% elif company.is_blacklisted %}
+                | <a
+                    href="{{ url_for('approve_company_action', company_id=company.id, action='whitelist') }}">Whilelist</a>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
