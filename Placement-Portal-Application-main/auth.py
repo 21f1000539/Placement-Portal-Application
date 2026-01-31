@@ -104,7 +104,7 @@ def admin_login():
     if request.method == "POST":
         admin = Admin.query.filter_by(username=request.form["username"]).first()
 
-        if admin and admin.password == request.form["password"]:
+        if admin and check_password_hash(admin.password, request.form["password"]):
             session["user_id"] = admin.id
             session["role"] = "admin"
             return redirect(url_for("admin_dashboard"))

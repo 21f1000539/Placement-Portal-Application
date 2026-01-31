@@ -8,10 +8,11 @@ with app.app_context():
     db.create_all()
 
     admin = Admin.query.filter_by(username="admin").first()
+    from werkzeug.security import generate_password_hash
     if not admin:
         admin = Admin(
             username="admin",
-            password="admin123"  # later hash this
+            password=generate_password_hash("admin123")
         )
         db.session.add(admin)
         db.session.commit()
