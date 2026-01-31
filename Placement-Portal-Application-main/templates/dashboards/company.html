@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Company Dashboard</title>
+</head>
+
+<body>
+    <h1>Company Dashboard</h1>
+    <a href="{{ url_for('auth.logout') }}">Logout</a>
+    <br><br>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+        <h3>My Company Profile</h3>
+        <p>Name: {{ company.name }}</p>
+        <p>Status:
+            {% if company.is_approved %}
+            <span style="color:green;">Approved</span>
+            {% else %}
+            <span style="color:orange;">Pending Approval</span>
+            {% endif %}
+        </p>
+        <p>Total Jobs Posted: {{ jobs|length }}</p>
+        <p>Total Applications Received: {{ total_applications }}</p>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <h3>Actions</h3>
+        <ul>
+            <li><a href="{{ url_for('post_job') }}">Post a New Job</a></li>
+            <li><a href="{{ url_for('company_applications') }}">View Applications</a></li>
+        </ul>
+    </div>
+
+    <h3>My Posted Jobs</h3>
+    {% if jobs %}
+    <table border="1">
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Deadline</th>
+            <th>Status</th>
+            <th>Applications</th>
+            <th>Action</th>
+        </tr>
+        {% for job in jobs %}
+        <tr>
+            <td>{{ job.title }}</td>
+            <td>N/A</td> <!-- Job Type not in model? Or Description? -->
+            <td>{{ job.deadline }}</td>
+            <td>{{ job.status }}</td>
+            <td>{{ job.applications|length }}</td>
+            <td>
+                {% if job.status == 'Approved' or job.status == 'Active' %}
+                <a href="{{ url_for('update_job_status', job_id=job.id, status='Closed') }}">Close Job</a>
+                {% elif job.status == 'Closed' %}
+                <a href="{{ url_for('update_job_status', job_id=job.id, status='Active') }}">Re-open Job</a>
+                {% else %}
+                Pending Admin Approval
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No jobs posted yet.</p>
+    {% endif %}
+
+</body>
+
+</html>

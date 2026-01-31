@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Post a Job</title>
+</head>
+
+<body>
+    <h1>Post a New Job</h1>
+    <a href="{{ url_for('company_dashboard') }}">Back to Dashboard</a>
+    <br><br>
+
+    <form method="POST">
+        <label>Job Title:</label><br>
+        <input type="text" name="title" required><br><br>
+
+        <label>Description:</label><br>
+        <textarea name="description" required></textarea><br><br>
+
+        <label>Eligibility Criteria:</label><br>
+        <input type="text" name="eligibility" required><br><br>
+
+        <label>Deadline:</label><br>
+        <input type="date" name="deadline" required><br><br>
+
+        <label>Required Skills:</label><br>
+        <input type="text" name="skills" required placeholder="e.g. Python, SQL"><br><br>
+
+        <label>Experience Required:</label><br>
+        <input type="text" name="experience" required placeholder="e.g. 0-1 years"><br><br>
+
+        <label>Salary Range:</label><br>
+        <input type="text" name="salary" required placeholder="e.g. 5-8 LPA"><br><br>
+
+        <button type="submit">Post Job</button>
+    </form>
+</body>
+
+</html>

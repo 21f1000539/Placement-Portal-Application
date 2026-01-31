@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>View Applications</title>
+</head>
+
+<body>
+    <h1>Applications Received</h1>
+    <a href="{{ url_for('company_dashboard') }}">Back to Dashboard</a>
+    <br><br>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    {% for job in jobs %}
+    <h3>{{ job.title }} ({{ job.status }})</h3>
+    {% if job.applications %}
+    <table border="1">
+        <tr>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>CGPA</th>
+            <th>Agreed Status</th>
+            <th>Action</th>
+            <th>Profile</th>
+        </tr>
+        {% for app in job.applications %}
+        <tr>
+            <td>{{ app.student.name }}</td>
+            <td>{{ app.student.email }}</td>
+            <td>{{ app.student.department }}</td>
+            <td>{{ app.student.cgpa }}</td>
+            <td>
+                <b>{{ app.status }}</b>
+            </td>
+            <td>
+                {% if app.status != 'Selected' and app.status != 'Rejected' %}
+                <a href="{{ url_for('update_application_status', app_id=app.id, status='Shortlisted') }}">Shortlist</a>
+                |
+                <a href="{{ url_for('update_application_status', app_id=app.id, status='Selected') }}">Select</a> |
+                <a href="{{ url_for('update_application_status', app_id=app.id, status='Rejected') }}">Reject</a>
+                {% else %}
+                Finalized
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('student_profile', student_id=app.student.id) }}">View Profile</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No applications for this job yet.</p>
+    {% endif %}
+    <hr>
+    {% endfor %}
+</body>
+
+</html>

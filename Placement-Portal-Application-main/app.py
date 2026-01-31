@@ -14,7 +14,8 @@ def create_app():
     from decorators import login_required
 
     from models import Company, Student, JobPosition, Application, Placement
-    from flask import request, redirect, url_for, flash
+    from flask import request, redirect, url_for, flash, session
+
 
 
     @app.route("/")
@@ -137,7 +138,115 @@ def create_app():
     @app.route("/company/dashboard")
     @login_required("company")
     def company_dashboard():
-        return render_template("dashboards/company.html")
+        company_id = session.get("user_id")
+        company = Company.query.get(company_id)
+        if not company.is_approved:
+             return render_template("unauthorized.html", message="Your account is awaiting admin approval.")
+        
+        jobs = JobPosition.query.filter_by(company_id=company_id).all()
+        # Count total applications received
+        total_applications = 0
+        for job in jobs:
+            total_applications += len(job.applications)
+            
+        return render_template("dashboards/company.html", company=company, jobs=jobs, total_applications=total_applications)
+
+    @app.route("/company/post_job", methods=["GET", "POST"])
+    @login_required("company")
+    def post_job():
+        if request.method == "POST":
+            company_id = session.get("user_id")
+            title = request.form["title"]
+            description = request.form["description"]
+            eligibility = request.form["eligibility"]
+            deadline_str = request.form["deadline"]
+            skills = request.form["skills"]
+            experience = request.form["experience"]
+            salary = request.form["salary"]
+            
+            from datetime import datetime
+            deadline = datetime.strptime(deadline_str, "%Y-%m-%d").date()
+            
+            job = JobPosition(
+                company_id=company_id,
+                title=title,
+                description=description,
+                eligibility=eligibility,
+                deadline=deadline,
+                skills=skills,
+                experience=experience,
+                salary=salary,
+                status="Pending" 
+                # Let's verify status default in model. Model default is 'Pending'. 
+                # Does admin need to approve jobs? "Approve and Reject job postings... created by companies." -> YES.
+                # So default should be 'Pending' or 'Active'? 
+                # If Admin has to approve, it should probably be 'Pending'. 
+                # But User Prompt also says "Update job posting status (Active/Closed)".
+                # Let's keep default as 'Pending' (from model) for Admin workflow, but allow Company to close it later?
+                # Actually, "Approve and Reject job postings" implies Admin control.
+                # So newly created job is 'Pending'.
+                # Once approved, it becomes 'Approved' (or 'Active'?). 
+                # Model default is 'Pending'.
+                # I will let it be 'Pending'.
+            )
+            db.session.add(job)
+            db.session.commit()
+            flash("Job posted successfully! Waiting for Admin approval.")
+            return redirect(url_for("company_dashboard"))
+            
+        return render_template("company/post_job.html")
+
+    @app.route("/company/update_job_status/<int:job_id>/<status>")
+    @login_required("company")
+    def update_job_status(job_id, status):
+        job = JobPosition.query.get_or_404(job_id)
+        # Ensure company owns this job
+        if job.company_id != session.get("user_id"):
+             flash("Unauthorized action.")
+             return redirect(url_for("company_dashboard"))
+        
+        # Valid statuses for company to toggle? Active/Closed.
+        # But system uses Pending/Approved/Rejected.
+        # Maybe 'Closed' is a state company can set.
+        if status in ["Closed", "Active"]: # If approved, they can close/re-open? Or just Close?
+             # Assuming 'Approved' acts as 'Active'. 
+             # Let's just update based on request if valid
+             job.status = status
+             db.session.commit()
+             flash(f"Job status updated to {status}.")
+        
+        return redirect(url_for("company_dashboard"))
+
+    @app.route("/company/applications")
+    @login_required("company")
+    def company_applications():
+        company_id = session.get("user_id")
+        jobs = JobPosition.query.filter_by(company_id=company_id).all()
+        return render_template("company/view_applications.html", jobs=jobs)
+
+    @app.route("/application/<int:app_id>/update_status/<status>")
+    @login_required("company")
+    def update_application_status(app_id, status):
+        application = Application.query.get_or_404(app_id)
+        # Verify ownership
+        if application.job_position.company_id != session.get("user_id"):
+            flash("Unauthorized.")
+            return redirect(url_for("company_dashboard"))
+
+        if status in ["Shortlisted", "Selected", "Rejected"]:
+            application.status = status
+            db.session.commit()
+            flash(f"Application status updated to {status}")
+        
+        # Determine redirect back
+        return redirect(request.referrer or url_for("company_applications"))
+
+    @app.route("/student/profile/<int:student_id>")
+    @login_required("company")
+    def student_profile(student_id):
+        student = Student.query.get_or_404(student_id)
+        return render_template("company/student_profile.html", student=student)
+
 
     return app
 

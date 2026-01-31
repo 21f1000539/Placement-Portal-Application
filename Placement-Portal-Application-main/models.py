@@ -53,6 +53,10 @@ class JobPosition(db.Model):
     description = db.Column(db.Text)
     eligibility = db.Column(db.String(200))
     deadline = db.Column(db.Date)
+    
+    skills = db.Column(db.String(200))
+    experience = db.Column(db.String(50))
+    salary = db.Column(db.String(50))
 
     status = db.Column(db.String(20), default="Pending")
     # Pending / Approved / Closed
