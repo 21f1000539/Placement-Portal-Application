@@ -6,7 +6,7 @@ def login_required(role):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
             if "role" not in session or session["role"] != role:
-                return redirect(url_for("auth.admin_login"))
+                return redirect(url_for("index"))
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper
