@@ -15,7 +15,6 @@ def create_app():
 
     from models import Company, Student, JobPosition, Application, Placement
     from flask import request, redirect, url_for, flash
-    from db import db
 
 
     @app.route("/")
