@@ -40,7 +40,7 @@
                 <i class="bi bi-briefcase display-3"></i>
             </div>
             <div class="card-body position-relative z-1">
-                <h5 class="card-title opacity-75">Job Posts</h5>
+                <h5 class="card-title opacity-75">Drives</h5>
                 <h2 class="display-4 fw-bold">{{ stats.jobs }}</h2>
             </div>
         </div>
@@ -53,6 +53,55 @@
             <div class="card-body position-relative z-1">
                 <h5 class="card-title opacity-75">Applications</h5>
                 <h2 class="display-4 fw-bold">{{ stats.applications }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<!-- Recent/Ongoing Drives -->
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white border-bottom-0 py-3 d-flex align-items-center">
+                <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-activity me-2"></i>Ongoing Placement Drives</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Drive Name</th>
+                            <th>Company</th>
+                            <th>Posted Date</th>
+                            <th>Status</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                        <tr>
+                            <td class="ps-4 fw-bold">{{ job.title }}</td>
+                            <td>{{ job.company.name }}</td>
+                            <td>{{ job.posted_date.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                {% if job.status == 'Approved' %}
+                                <span class="badge bg-success rounded-pill px-2">Active</span>
+                                {% else %}
+                                <span class="badge bg-warning text-dark rounded-pill px-2">{{ job.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Details</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">No ongoing drives.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

@@ -53,6 +53,7 @@ class JobPosition(db.Model):
     description = db.Column(db.Text)
     eligibility = db.Column(db.String(200))
     deadline = db.Column(db.Date)
+    posted_date = db.Column(db.DateTime, default=datetime.utcnow)
     
     skills = db.Column(db.String(200))
     experience = db.Column(db.String(50))
