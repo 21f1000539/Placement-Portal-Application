@@ -148,7 +148,17 @@ def create_app():
         if request.method == "POST":
             student.name = request.form["name"]
             student.department = request.form["department"]
-            student.cgpa = request.form["cgpa"]
+            cgpa_str = request.form["cgpa"]
+            
+            if cgpa_str:
+                try:
+                    cgpa = float(cgpa_str)
+                    if not (0 <= cgpa <= 10):
+                        raise ValueError
+                    student.cgpa = cgpa
+                except ValueError:
+                    flash("Invalid CGPA. Must be between 0 and 10.")
+                    return redirect(url_for("student_profile"))
             
             # Handle Resume Update
             if 'resume' in request.files:
@@ -253,8 +263,15 @@ def create_app():
             experience = request.form["experience"]
             salary = request.form["salary"]
             
-            from datetime import datetime
-            deadline = datetime.strptime(deadline_str, "%Y-%m-%d").date()
+            from datetime import datetime, date
+            try:
+                deadline = datetime.strptime(deadline_str, "%Y-%m-%d").date()
+                if deadline < date.today():
+                    flash("Deadline cannot be in the past.")
+                    return redirect(url_for("post_job"))
+            except ValueError:
+                flash("Invalid date format.")
+                return redirect(url_for("post_job"))
             
             job = JobPosition(
                 company_id=company_id,

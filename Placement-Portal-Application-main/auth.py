@@ -9,6 +9,33 @@ auth_bp = Blueprint("auth", __name__)
 def student_register():
     if request.method == "POST":
         email = request.form["email"]
+        password = request.form["password"]
+        department = request.form.get("department")
+        cgpa_str = request.form.get("cgpa")
+
+        # Validation
+        import re
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            flash("Invalid email format.")
+            return redirect(url_for("auth.student_register"))
+        
+        if len(password) < 6:
+            flash("Password must be at least 6 characters.")
+            return redirect(url_for("auth.student_register"))
+
+        if not department:
+            flash("Department is required.")
+            return redirect(url_for("auth.student_register"))
+
+        cgpa = None
+        if cgpa_str:
+            try:
+                cgpa = float(cgpa_str)
+                if not (0 <= cgpa <= 10):
+                     raise ValueError
+            except:
+                flash("Invalid CGPA. Must be between 0 and 10.")
+                return redirect(url_for("auth.student_register"))
 
         existing = Student.query.filter_by(email=email).first()
         if existing:
@@ -30,9 +57,9 @@ def student_register():
         student = Student(
             name=request.form["name"],
             email=email,
-            password=generate_password_hash(request.form["password"]),
-            department=request.form.get("department"),
-            cgpa=request.form.get("cgpa"),
+            password=generate_password_hash(password),
+            department=department,
+            cgpa=cgpa,
             resume=resume_filename
         )
 
@@ -66,17 +93,39 @@ def student_login():
 @auth_bp.route("/register/company", methods=["GET", "POST"])
 def company_register():
     if request.method == "POST":
-        existing = Company.query.filter_by(email=request.form["email"]).first()
+        email = request.form["email"]
+        password = request.form["password"]
+        website = request.form.get("website")
+        hr_contact = request.form.get("hr_contact")
+
+        import re
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            flash("Invalid email format.")
+            return redirect(url_for("auth.company_register"))
+            
+        if len(password) < 6:
+            flash("Password must be at least 6 characters.")
+            return redirect(url_for("auth.company_register"))
+            
+        if not website:
+            flash("Website is required.")
+            return redirect(url_for("auth.company_register"))
+
+        if not hr_contact:
+             flash("HR Contact is required.")
+             return redirect(url_for("auth.company_register"))
+
+        existing = Company.query.filter_by(email=email).first()
         if existing:
              flash("Email already registered")
              return redirect(url_for("auth.company_register"))
 
         company = Company(
             name=request.form["name"],
-            email=request.form["email"],
-            password=generate_password_hash(request.form["password"]),
-            website=request.form.get("website"),
-            hr_contact=request.form.get("hr_contact"),
+            email=email,
+            password=generate_password_hash(password),
+            website=website,
+            hr_contact=hr_contact,
             is_approved=False
         )
         db.session.add(company)
