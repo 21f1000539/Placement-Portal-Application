@@ -24,7 +24,7 @@
                 <tr>
                     <td class="fw-bold">{{ app.job_position.title }}</td>
                     <td>{{ app.job_position.company.name }}</td>
-                    <td>{{ app.applied_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ app.applied_on.strftime('%Y-%m-%d') }}</td>
                     <td>
                         {% if app.status == 'Applied' %}
                         <span class="badge bg-primary">Applied</span>

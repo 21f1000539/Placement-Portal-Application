@@ -39,7 +39,7 @@
                     </td>
                     <td>{{ app.student.email }}</td>
                     <td>{{ app.student.cgpa }}</td>
-                    <td>{{ app.applied_date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ app.applied_on.strftime('%Y-%m-%d') }}</td>
                     <td>
                         <span
                             class="badge {% if app.status=='Rejected' %}bg-danger{% elif app.status=='Placed' %}bg-success{% else %}bg-info{% endif %}">
