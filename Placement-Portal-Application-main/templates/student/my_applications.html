@@ -1,53 +1,51 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>My Applications</title>
-</head>
+{% block title %}My Applications{% endblock %}
 
-<body>
-    <h1>My Applications</h1>
-    <a href="{{ url_for('student_dashboard') }}">Back to Dashboard</a>
-    <br><br>
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>My Applications</h2>
+    <a href="{{ url_for('student_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+</div>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-
-    <table border="1">
-        <tr>
-            <th>Company</th>
-            <th>Role</th>
-            <th>Applied On</th>
-            <th>Status</th>
-        </tr>
-        {% for app in applications %}
-        <tr>
-            <td>{{ app.job_position.company.name }}</td>
-            <td>{{ app.job_position.title }}</td>
-            <td>{{ app.applied_on.strftime('%Y-%m-%d') }}</td>
-            <td>
-                {% if app.status == 'Selected' %}
-                <span style="color:green; font-weight:bold;">Selected</span>
-                {% elif app.status == 'Rejected' %}
-                <span style="color:red;">Rejected</span>
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Applied Date</th>
+                    <th>Current Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td class="fw-bold">{{ app.job_position.title }}</td>
+                    <td>{{ app.job_position.company.name }}</td>
+                    <td>{{ app.applied_date.strftime('%Y-%m-%d') }}</td>
+                    <td>
+                        {% if app.status == 'Applied' %}
+                        <span class="badge bg-primary">Applied</span>
+                        {% elif app.status == 'Shortlisted' or app.status == 'Interview' %}
+                        <span class="badge bg-warning text-dark">{{ app.status }}</span>
+                        {% elif app.status == 'Selected' or app.status == 'Placed' %}
+                        <span class="badge bg-success">{{ app.status }}</span>
+                        {% elif app.status == 'Rejected' %}
+                        <span class="badge bg-danger">Rejected</span>
+                        {% else %}
+                        <span class="badge bg-secondary">{{ app.status }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
                 {% else %}
-                {{ app.status }}
-                {% endif %}
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="4">You haven't applied to any jobs yet.</td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-
-</html>
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">You haven't applied to any jobs yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,20 +1,48 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Student Profile</title>
-</head>
+{% block title %}Student Profile{% endblock %}
 
-<body>
-    <h1>Student Profile: {{ student.name }}</h1>
-    <a href="javascript:history.back()">Back</a>
-    <br><br>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Candidate Profile</h4>
+                <button onclick="history.back()" class="btn btn-sm btn-outline-secondary">Go Back</button>
+            </div>
+            <div class="card-body text-center p-5">
+                <div class="mb-4">
+                    <span class="display-1 p-3 bg-light rounded-circle">🎓</span>
+                </div>
+                <h2 class="fw-bold">{{ student.name }}</h2>
+                <p class="text-muted">{{ student.email }}</p>
 
-    <p><strong>Email:</strong> {{ student.email }}</p>
-    <p><strong>Department:</strong> {{ student.department }}</p>
-    <p><strong>CGPA:</strong> {{ student.cgpa }}</p>
-    <p><strong>Resume:</strong> <a href="#">{{ student.resume }}</a> (Mock Link)</p>
+                <div class="row mt-5 text-start">
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small text-uppercase fw-bold">Department</label>
+                        <h5>{{ student.department }}</h5>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="text-muted small text-uppercase fw-bold">CGPA</label>
+                        <h5>{{ student.cgpa }}</h5>
+                    </div>
+                </div>
 
-</body>
+                <hr class="my-4">
 
-</html>
+                <h5 class="text-start mb-3">Resume</h5>
+                <div class="text-start">
+                    {% if student.resume %}
+                    <a href="{{ url_for('static', filename='uploads/resumes/' + student.resume) }}"
+                        class="btn btn-outline-primary" target="_blank">
+                        📄 Download / View Resume
+                    </a>
+                    {% else %}
+                    <p class="text-muted fst-italic">No resume uploaded by this student.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,68 +1,107 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Admin Dashboard</title>
-</head>
+{% block title %}Admin Dashboard{% endblock %}
 
-<body>
-    <h1>Admin Dashboard</h1>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-
-    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
-        <h3>Statistics</h3>
-        <p>Total Companies: {{ stats.companies }}</p>
-        <p>Total Students: {{ stats.students }}</p>
-        <p>Total Jobs: {{ stats.jobs }}</p>
-        <p>Total Applications: {{ stats.applications }}</p>
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="display-6">Admin Dashboard</h2>
+        <hr>
     </div>
+</div>
 
-    <div style="margin-bottom: 20px;">
-        <h3>Management</h3>
-        <ul>
-            <li><a href="{{ url_for('manage_companies') }}">Manage Companies</a></li>
-            <li><a href="{{ url_for('manage_students') }}">Manage Students</a></li>
-            <li><a href="{{ url_for('manage_jobs') }}">Manage Jobs</a></li>
-            <li><a href="{{ url_for('view_applications') }}">View Applications</a></li>
-        </ul>
+<!-- Stats Cards -->
+<div class="row g-4 mb-5">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Companies</h5>
+                <h2 class="display-4 fw-bold">{{ stats.companies }}</h2>
+            </div>
+        </div>
     </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Students</h5>
+                <h2 class="display-4 fw-bold">{{ stats.students }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title text-dark">Job Posts</h5>
+                <h2 class="display-4 fw-bold text-dark">{{ stats.jobs }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Applications</h5>
+                <h2 class="display-4 fw-bold">{{ stats.applications }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <h2>Pending Company Approvals</h2>
-    {% if companies %}
-    <table border="1">
-        <tr>
-            <th>Company Name</th>
-            <th>Email</th>
-            <th>Website</th>
-            <th>HR Contact</th>
-            <th>Action</th>
-        </tr>
-        {% for company in companies %}
-        <tr>
-            <td>{{ company.name }}</td>
-            <td>{{ company.email }}</td>
-            <td>{{ company.website }}</td>
-            <td>{{ company.hr_contact }}</td>
-            <td>
-                <a href="{{ url_for('approve_company', company_id=company.id) }}">Approve</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-    <p>No pending approvals.</p>
-    {% endif %}
+<!-- Pending Approvals -->
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white border-bottom-0">
+                <h4 class="mb-0">Pending Company Approvals</h4>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Email</th>
+                            <th>Website</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for company in companies %}
+                        <tr>
+                            <td>{{ company.name }}</td>
+                            <td>{{ company.email }}</td>
+                            <td><a href="{{ company.website }}" target="_blank">{{ company.website }}</a></td>
+                            <td>
+                                <a href="{{ url_for('approve_company', company_id=company.id) }}"
+                                    class="btn btn-sm btn-success">Approve</a>
+                                <a href="{{ url_for('approve_company_action', company_id=company.id, action='reject') }}"
+                                    class="btn btn-sm btn-danger">Reject</a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">No pending approvals.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
-</body>
-
-</html>
+<!-- Management Links -->
+<h4 class="mb-3">Quick Management</h4>
+<div class="row g-3">
+    <div class="col-md-3">
+        <a href="{{ url_for('manage_companies') }}" class="btn btn-outline-dark w-100 py-3">Manage Companies</a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ url_for('manage_students') }}" class="btn btn-outline-dark w-100 py-3">Manage Students</a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ url_for('manage_jobs') }}" class="btn btn-outline-dark w-100 py-3">Manage Jobs</a>
+    </div>
+    <div class="col-md-3">
+        <a href="{{ url_for('view_applications') }}" class="btn btn-outline-dark w-100 py-3">View All Applications</a>
+    </div>
+</div>
+{% endblock %}

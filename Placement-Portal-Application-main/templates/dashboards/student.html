@@ -1,33 +1,45 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Student Dashboard</title>
-</head>
+{% block title %}Student Dashboard{% endblock %}
 
-<body>
-    <h1>Student Dashboard</h1>
-    <a href="{{ url_for('auth.logout') }}">Logout</a>
-    <br><br>
-
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-
-    <div style="margin-bottom: 20px;">
-        <h3>Menu</h3>
-        <ul>
-            <li><a href="{{ url_for('student_profile') }}">My Profile</a></li>
-            <li><a href="{{ url_for('student_jobs') }}">Search Jobs</a></li>
-            <li><a href="{{ url_for('student_my_applications') }}">My Applications</a></li>
-        </ul>
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="display-6">Welcome, Student!</h2>
+        <hr>
     </div>
-</body>
+</div>
 
-</html>
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="display-1 mb-3">👤</div>
+                <h3 class="card-title">My Profile</h3>
+                <p class="card-text">Update your personal details and resume.</p>
+                <a href="{{ url_for('student_profile') }}" class="btn btn-primary">Manage Profile</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="display-1 mb-3">🔍</div>
+                <h3 class="card-title">Search Jobs</h3>
+                <p class="card-text">Browse and apply for open positions.</p>
+                <a href="{{ url_for('student_jobs') }}" class="btn btn-primary">View Jobs</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="display-1 mb-3">📄</div>
+                <h3 class="card-title">My Applications</h3>
+                <p class="card-text">Track status of your job applications.</p>
+                <a href="{{ url_for('student_my_applications') }}" class="btn btn-primary">View Status</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

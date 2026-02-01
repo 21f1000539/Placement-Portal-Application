@@ -1,41 +1,58 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Student Registration</title>
-</head>
+{% block title %}Student Register{% endblock %}
 
-<body>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h3 class="mb-0">Student Registration</h3>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
 
-    <h2>Student Registration</h2>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" name="email" class="form-control" required
+                            placeholder="example@student.com">
+                    </div>
 
-    <form method="POST" enctype="multipart/form-data">
-        <label>Name</label><br>
-        <input type="text" name="name" required><br><br>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" required minlength="6">
+                        <div class="form-text">Minimum 6 characters</div>
+                    </div>
 
-        <label>Email</label><br>
-        <input type="email" name="email" required><br><br>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Department</label>
+                            <input type="text" name="department" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CGPA</label>
+                            <input type="number" step="0.01" name="cgpa" class="form-control" min="0" max="10">
+                        </div>
+                    </div>
 
-        <label>Password</label><br>
-        <input type="password" name="password" required minlength="6"><br><br>
+                    <div class="mb-3">
+                        <label class="form-label">Upload Resume (PDF/Doc)</label>
+                        <input type="file" name="resume" class="form-control">
+                    </div>
 
-        <label>Department</label><br>
-        <input type="text" name="department" required><br><br>
-
-        <label>CGPA</label><br>
-        <input type="number" step="0.01" name="cgpa" min="0" max="10"><br><br>
-
-        <label>Resume Link</label><br>
-        <input type="text" name="resume"><br><br>
-
-        <button type="submit">Register</button>
-    </form>
-
-    <p>
-        Already registered?
-        <a href="/login/student">Login here</a>
-    </p>
-
-</body>
-
-</html>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">Create Account</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small>Already registered? <a href="{{ url_for('auth.student_login') }}">Login here</a></small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

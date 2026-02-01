@@ -1,33 +1,48 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>View Applications</title>
-</head>
+{% block title %}All Applications{% endblock %}
 
-<body>
-    <h1>All Applications</h1>
-    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
-    <br><br>
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>All Applications</h2>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+</div>
 
-    <table border="1">
-        <tr>
-            <th>Student</th>
-            <th>Job Title</th>
-            <th>Company</th>
-            <th>Status</th>
-            <th>Applied On</th>
-        </tr>
-        {% for app in applications %}
-        <tr>
-            <td>{{ app.student.name }}</td>
-            <td>{{ app.job_position.title }}</td>
-            <td>{{ app.job_position.company.name }}</td>
-            <td>{{ app.status }}</td>
-            <td>{{ app.applied_on }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-
-</html>
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Student</th>
+                    <th>Job Title</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for app in applications %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('view_student_profile', student_id=app.student.id) }}"
+                            class="text-decoration-none fw-bold">
+                            {{ app.student.name }}
+                        </a>
+                    </td>
+                    <td>{{ app.job_position.title }}</td>
+                    <td>{{ app.job_position.company.name }}</td>
+                    <td>
+                        <span class="badge bg-secondary">{{ app.status }}</span>
+                    </td>
+                    <td>{{ app.applied_date.strftime('%Y-%m-%d') }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">No applications found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

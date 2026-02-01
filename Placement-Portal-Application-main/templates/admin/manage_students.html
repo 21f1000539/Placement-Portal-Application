@@ -1,54 +1,71 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Manage Students</title>
-</head>
+{% block title %}Manage Students{% endblock %}
 
-<body>
-    <h1>Manage Students</h1>
-    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
-    <br><br>
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Manage Students</h2>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+</div>
 
-    <form method="GET">
-        <input type="text" name="search" placeholder="Search by name or email"
-            value="{{ request.args.get('search', '') }}">
-        <button type="submit">Search</button>
-    </form>
-    <br>
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form class="row g-3" method="GET">
+            <div class="col-auto flex-grow-1">
+                <input type="text" name="search" class="form-control" placeholder="Search by name or email..."
+                    value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <table border="1">
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>CGPA</th>
-            <th>Active</th>
-            <th>Action</th>
-        </tr>
-        {% for student in students %}
-        <tr>
-            <td>{{ student.name }}</td>
-            <td>{{ student.email }}</td>
-            <td>{{ student.department }}</td>
-            <td>{{ student.cgpa }}</td>
-            <td>
-                {% if student.is_active %}
-                <span style="color:green;">Yes</span>
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.id }}</td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.department }}</td>
+                    <td>
+                        {% if student.is_active %}
+                        <span class="badge bg-success">Active</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if student.is_active %}
+                        <a href="{{ url_for('student_action', student_id=student.id, action='deactivate') }}"
+                            class="btn btn-sm btn-warning">Deactivate</a>
+                        {% else %}
+                        <a href="{{ url_for('student_action', student_id=student.id, action='activate') }}"
+                            class="btn btn-sm btn-success">Activate</a>
+                        {% endif %}
+                    </td>
+                </tr>
                 {% else %}
-                <span style="color:red;">No</span>
-                {% endif %}
-            </td>
-            <td>
-                {% if student.is_active %}
-                <a href="{{ url_for('student_action', student_id=student.id, action='deactivate') }}">Deactivate</a>
-                {% else %}
-                <a href="{{ url_for('student_action', student_id=student.id, action='activate') }}">Activate</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-
-</html>
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No students found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

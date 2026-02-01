@@ -1,59 +1,60 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Search Jobs</title>
-</head>
+{% block title %}Search Jobs{% endblock %}
 
-<body>
-    <h1>Search Jobs</h1>
-    <a href="{{ url_for('student_dashboard') }}">Back to Dashboard</a>
-    <br><br>
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col">
+        <h2>Open Positions</h2>
+    </div>
+    <div class="col-auto">
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+</div>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form class="row g-3" method="GET">
+            <div class="col-lg-10">
+                <input type="text" name="search" class="form-control form-control-lg"
+                    placeholder="Search by Job Role, Company, or Skills..."
+                    value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-lg-2 d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
 
-    <form method="GET">
-        <input type="text" name="search" placeholder="Search by title, company, skills...">
-        <button type="submit">Search</button>
-    </form>
-    <br>
+<div class="row g-4">
+    {% for job in jobs %}
+    <div class="col-md-6 col-xl-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title fw-bold text-primary">{{ job.title }}</h5>
+                    <span class="badge bg-light text-dark border">{{ job.company.name }}</span>
+                </div>
+                <h6 class="card-subtitle mb-3 text-muted">Salary: {{ job.salary }}</h6>
 
-    <table border="1">
-        <tr>
-            <th>Role</th>
-            <th>Company</th>
-            <th>DeadLine</th>
-            <th>Skills</th>
-            <th>Experience</th>
-            <th>Salary</th>
-            <th>Action</th>
-        </tr>
-        {% for job in jobs %}
-        <tr>
-            <td>{{ job.title }}</td>
-            <td>{{ job.company.name }}</td>
-            <td>{{ job.deadline }}</td>
-            <td>{{ job.skills }}</td>
-            <td>{{ job.experience }}</td>
-            <td>{{ job.salary }}</td>
-            <td>
-                <a href="{{ url_for('apply_job', job_id=job.id) }}">Apply Now</a>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="7">No active jobs found.</td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
+                <p class="card-text text-truncate">{{ job.description }}</p>
 
-</html>
+                <div class="mb-3 small">
+                    <div class="text-muted"><strong>Skills:</strong> {{ job.skills }}</div>
+                    <div class="text-muted"><strong>Exp:</strong> {{ job.experience }}</div>
+                </div>
+            </div>
+            <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
+                <small class="text-muted">Deadline: {{ job.deadline }}</small>
+                <a href="{{ url_for('apply_job', job_id=job.id) }}" class="btn btn-sm btn-primary px-3">Apply Now</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <h4 class="text-muted">No jobs matching your search.</h4>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

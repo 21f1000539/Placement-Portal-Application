@@ -1,50 +1,61 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>My Profile</title>
-</head>
+{% block title %}My Profile{% endblock %}
 
-<body>
-    <h1>My Profile</h1>
-    <a href="{{ url_for('student_dashboard') }}">Back to Dashboard</a>
-    <br><br>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Edit Profile</h4>
+                <a href="{{ url_for('student_dashboard') }}" class="btn btn-sm btn-outline-secondary">Back</a>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="name" class="form-control" value="{{ student.name }}" required>
+                    </div>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" value="{{ student.email }}" disabled>
+                    </div>
 
-    <form method="POST" enctype="multipart/form-data">
-        <label>Name:</label><br>
-        <input type="text" name="name" value="{{ student.name }}" required><br><br>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Department</label>
+                            <input type="text" name="department" class="form-control" value="{{ student.department }}">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CGPA</label>
+                            <input type="number" step="0.01" name="cgpa" class="form-control" value="{{ student.cgpa }}"
+                                min="0" max="10">
+                        </div>
+                    </div>
 
-        <label>Email:</label><br>
-        <input type="text" value="{{ student.email }}" disabled><br><br>
+                    <div class="mb-3">
+                        <label class="form-label">Resume</label>
+                        {% if student.resume %}
+                        <div class="mb-2">
+                            <a href="{{ url_for('static', filename='uploads/resumes/' + student.resume) }}"
+                                class="btn btn-sm btn-outline-primary" target="_blank">
+                                📄 View Current Resume ({{ student.resume }})
+                            </a>
+                        </div>
+                        {% else %}
+                        <div class="text-danger mb-2">No resume uploaded!</div>
+                        {% endif %}
+                        <input type="file" name="resume" class="form-control">
+                        <div class="form-text">Upload new file to replace current resume.</div>
+                    </div>
 
-        <label>Department:</label><br>
-        <input type="text" name="department" value="{{ student.department }}"><br><br>
-
-        <label>CGPA:</label><br>
-        <label>CGPA:</label><br>
-        <input type="number" step="0.01" name="cgpa" value="{{ student.cgpa }}" min="0" max="10"><br><br>
-
-        <label>Resume:</label><br>
-        {% if student.resume %}
-        <p>Current: <a href="{{ url_for('static', filename='uploads/resumes/' + student.resume) }}" target="_blank">{{
-                student.resume }}</a></p>
-        {% else %}
-        <p>No resume uploaded.</p>
-        {% endif %}
-        <input type="file" name="resume"><br><br>
-
-        <button type="submit">Update Profile</button>
-    </form>
-</body>
-
-</html>
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

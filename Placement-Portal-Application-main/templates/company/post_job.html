@@ -1,39 +1,64 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Post a Job</title>
-</head>
+{% block title %}Post New Job{% endblock %}
 
-<body>
-    <h1>Post a New Job</h1>
-    <a href="{{ url_for('company_dashboard') }}">Back to Dashboard</a>
-    <br><br>
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Post a New Job Application</h4>
+                <a href="{{ url_for('company_dashboard') }}" class="btn btn-sm btn-outline-secondary">Back</a>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-8 mb-3">
+                            <label class="form-label">Job Title</label>
+                            <input type="text" name="title" class="form-control" required
+                                placeholder="Senior Software Engineer">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Salary Range</label>
+                            <input type="text" name="salary" class="form-control" required placeholder="e.g. 12-18 LPA">
+                        </div>
+                    </div>
 
-    <form method="POST">
-        <label>Job Title:</label><br>
-        <input type="text" name="title" required><br><br>
+                    <div class="mb-3">
+                        <label class="form-label">Job Description</label>
+                        <textarea name="description" class="form-control" rows="4" required></textarea>
+                    </div>
 
-        <label>Description:</label><br>
-        <textarea name="description" required></textarea><br><br>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Eligibility Criteria</label>
+                            <input type="text" name="eligibility" class="form-control" required
+                                placeholder="B.Tech CS/IT, >7.5 CGPA">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Experience Required</label>
+                            <input type="text" name="experience" class="form-control" required placeholder="0-2 Years">
+                        </div>
+                    </div>
 
-        <label>Eligibility Criteria:</label><br>
-        <input type="text" name="eligibility" required><br><br>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Required Skills</label>
+                            <input type="text" name="skills" class="form-control" required
+                                placeholder="Python, Django, AWS">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Application Deadline</label>
+                            <input type="date" name="deadline" class="form-control" required>
+                        </div>
+                    </div>
 
-        <label>Deadline:</label><br>
-        <input type="date" name="deadline" required><br><br>
-
-        <label>Required Skills:</label><br>
-        <input type="text" name="skills" required placeholder="e.g. Python, SQL"><br><br>
-
-        <label>Experience Required:</label><br>
-        <input type="text" name="experience" required placeholder="e.g. 0-1 years"><br><br>
-
-        <label>Salary Range:</label><br>
-        <input type="text" name="salary" required placeholder="e.g. 5-8 LPA"><br><br>
-
-        <button type="submit">Post Job</button>
-    </form>
-</body>
-
-</html>
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-success btn-lg">Submit for Approval</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
