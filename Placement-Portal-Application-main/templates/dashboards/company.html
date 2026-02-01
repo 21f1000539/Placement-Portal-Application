@@ -3,87 +3,114 @@
 {% block title %}Company Dashboard{% endblock %}
 
 {% block content %}
-<div class="row mb-4 align-items-center">
+<div class="row mb-5 align-items-center">
     <div class="col">
-        <h2 class="display-6">{{ company.name }} Dashboard</h2>
+        <h2 class="display-6 fw-bold">{{ company.name }} <span class="text-muted fs-4">Dashboard</span></h2>
     </div>
     <div class="col-auto">
-        <a href="{{ url_for('post_job') }}" class="btn btn-success">+ Post New Job</a>
+        <a href="{{ url_for('post_job') }}" class="btn btn-success rounded-pill shadow-sm">
+            <i class="bi bi-plus-lg me-2"></i>Post New Job
+        </a>
     </div>
 </div>
 
-<div class="row mb-4">
+<div class="row mb-5 g-4">
     <div class="col-md-4">
-        <div class="card bg-light border-0 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Total Jobs Posted</h5>
-                <h2 class="fw-bold">{{ jobs|length }}</h2>
+        <div class="card bg-white border-0 shadow-sm h-100">
+            <div class="card-body p-4 d-flex align-items-center">
+                <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-briefcase fs-3 text-primary"></i>
+                </div>
+                <div>
+                    <h5 class="card-title text-muted mb-0">Total Jobs Posted</h5>
+                    <h2 class="fw-bold mb-0">{{ jobs|length }}</h2>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card bg-light border-0 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Total Applications</h5>
-                <h2 class="fw-bold">{{ total_applications }}</h2>
+        <div class="card bg-white border-0 shadow-sm h-100">
+            <div class="card-body p-4 d-flex align-items-center">
+                <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                    <i class="bi bi-people fs-3 text-success"></i>
+                </div>
+                <div>
+                    <h5 class="card-title text-muted mb-0">Total Applications</h5>
+                    <h2 class="fw-bold mb-0">{{ total_applications }}</h2>
+                </div>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card bg-light border-0 shadow-sm">
-            <div class="card-body">
-                <h5 class="card-title text-muted">Quick Actions</h5>
-                <a href="{{ url_for('company_applications') }}" class="btn btn-sm btn-outline-dark">View
-                    Applications</a>
+        <div class="card bg-dark text-white border-0 shadow-sm h-100">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                <div>
+                    <h5 class="card-title text-white-50 mb-1">Quick Actions</h5>
+                    <p class="mb-0 small">Review incoming talent.</p>
+                </div>
+                <a href="{{ url_for('company_applications') }}" class="btn btn-light rounded-pill btn-sm px-3">
+                    View Applications <i class="bi bi-arrow-right ms-1"></i>
+                </a>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-header bg-white">
-        <h4 class="mb-0">Your Job Postings</h4>
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 border-bottom-0">
+        <h4 class="mb-0 fw-bold"><i class="bi bi-list-ul me-2"></i>Your Job Postings</h4>
     </div>
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th>Title</th>
-                    <th>Posted On</th>
+                    <th class="ps-4">Title</th>
+                    <th>Deadline</th>
                     <th>Status</th>
                     <th>Applications</th>
-                    <th>Actions</th>
+                    <th class="text-end pe-4">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for job in jobs %}
                 <tr>
-                    <td>{{ job.title }}</td>
+                    <td class="ps-4 fw-bold text-primary">{{ job.title }}</td>
                     <td>{{ job.deadline }}</td>
                     <td>
                         {% if job.status == 'Approved' %}
-                        <span class="badge bg-success">Approved</span>
+                        <span class="badge bg-success rounded-pill px-3">Approved</span>
                         {% elif job.status == 'Pending' %}
-                        <span class="badge bg-warning text-dark">Pending</span>
+                        <span class="badge bg-warning text-dark rounded-pill px-3">Pending</span>
                         {% else %}
-                        <span class="badge bg-danger">{{ job.status }}</span>
+                        <span class="badge bg-danger rounded-pill px-3">{{ job.status }}</span>
                         {% endif %}
                     </td>
-                    <td>{{ job.applications|length }}</td>
                     <td>
+                        <span class="badge bg-light text-dark border px-3">
+                            <i class="bi bi-person me-1"></i>{{ job.applications|length }}
+                        </span>
+                    </td>
+                    <td class="text-end pe-4">
                         {% if job.status != 'Closed' %}
                         <a href="{{ url_for('update_job_status', job_id=job.id, status='Closed') }}"
-                            class="btn btn-sm btn-outline-danger">Close</a>
+                            class="btn btn-sm btn-outline-danger rounded-pill" title="Close Job">
+                            <i class="bi bi-x-circle me-1"></i>Close
+                        </a>
                         {% endif %}
                         {% if job.status == 'Closed' %}
                         <a href="{{ url_for('update_job_status', job_id=job.id, status='Active') }}"
-                            class="btn btn-sm btn-outline-success">Re-open</a>
+                            class="btn btn-sm btn-outline-success rounded-pill" title="Re-open Job">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i>Re-open
+                        </a>
                         {% endif %}
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="5" class="text-center py-4 text-muted">No jobs posted yet.</td>
+                    <td colspan="5" class="text-center py-5 text-muted">
+                        <i class="bi bi-inbox fs-1 d-block mb-3 opacity-50"></i>
+                        No jobs posted yet.
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

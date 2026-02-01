@@ -3,41 +3,56 @@
 {% block title %}Student Dashboard{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-md-12">
-        <h2 class="display-6">Welcome, Student!</h2>
-        <hr>
+<div class="row mb-5 align-items-center">
+    <div class="col">
+        <h2 class="display-6 fw-bold">Welcome, Student!</h2>
+        <p class="text-muted">Manage your profile and job applications.</p>
+    </div>
+    <div class="col-auto">
+        <span class="badge bg-primary rounded-pill px-3 py-2">Account Active</span>
     </div>
 </div>
 
 <div class="row g-4">
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-                <div class="display-1 mb-3">👤</div>
-                <h3 class="card-title">My Profile</h3>
-                <p class="card-text">Update your personal details and resume.</p>
-                <a href="{{ url_for('student_profile') }}" class="btn btn-primary">Manage Profile</a>
+        <div class="card h-100 border-0 shadow-sm transition-hover">
+            <div class="card-body text-center p-5">
+                <div class="mb-4">
+                    <i class="bi bi-person-circle fs-1 text-primary"></i>
+                </div>
+                <h3 class="card-title fw-bold">My Profile</h3>
+                <p class="card-text text-muted">Update your personal details, resume, and skills.</p>
+                <a href="{{ url_for('student_profile') }}" class="btn btn-primary w-100 rounded-pill">
+                    <i class="bi bi-pencil-square me-2"></i>Manage Profile
+                </a>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-                <div class="display-1 mb-3">🔍</div>
-                <h3 class="card-title">Search Jobs</h3>
-                <p class="card-text">Browse and apply for open positions.</p>
-                <a href="{{ url_for('student_jobs') }}" class="btn btn-primary">View Jobs</a>
+        <div class="card h-100 border-0 shadow-sm transition-hover">
+            <div class="card-body text-center p-5">
+                <div class="mb-4">
+                    <i class="bi bi-search fs-1 text-success"></i>
+                </div>
+                <h3 class="card-title fw-bold">Search Jobs</h3>
+                <p class="card-text text-muted">Browse open positions and apply to companies.</p>
+                <a href="{{ url_for('student_jobs') }}" class="btn btn-outline-success w-100 rounded-pill">
+                    <i class="bi bi-briefcase me-2"></i>View Jobs
+                </a>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body text-center">
-                <div class="display-1 mb-3">📄</div>
-                <h3 class="card-title">My Applications</h3>
-                <p class="card-text">Track status of your job applications.</p>
-                <a href="{{ url_for('student_my_applications') }}" class="btn btn-primary">View Status</a>
+        <div class="card h-100 border-0 shadow-sm transition-hover">
+            <div class="card-body text-center p-5">
+                <div class="mb-4">
+                    <i class="bi bi-file-earmark-text fs-1 text-info"></i>
+                </div>
+                <h3 class="card-title fw-bold">My Applications</h3>
+                <p class="card-text text-muted">Track the status of your submitted applications.</p>
+                <a href="{{ url_for('student_my_applications') }}" class="btn btn-outline-info w-100 rounded-pill">
+                    <i class="bi bi-list-check me-2"></i>View Status
+                </a>
             </div>
         </div>
     </div>
