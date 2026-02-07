@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Job Details{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Job Details</li>
+                </ol>
+            </nav>
+            <div class="d-flex justify-content-between align-items-center">
+                <h2 class="display-6 fw-bold">{{ job.title }}</h2>
+                <span class="badge 
+                    {% if job.status == 'Approved' %}bg-success
+                    {% elif job.status == 'Closed' %}bg-danger
+                    {% else %}bg-warning text-dark{% endif %} 
+                    rounded-pill px-3 py-2 fs-6">{{ job.status }}</span>
+            </div>
+            <p class="text-muted fs-5">{{ job.company.name }}</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Description</h5>
+                    <p>{{ job.description }}</p>
+
+                    <h5 class="fw-bold mb-3 mt-4">Requirements & Skills</h5>
+                    <p class="mb-2"><strong>Skills:</strong> {{ job.skills }}</p>
+                    <p class="mb-2"><strong>Experience:</strong> {{ job.experience }} years</p>
+                    <p class="mb-0"><strong>Eligibility:</strong> {{ job.eligibility }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">Overview</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-3 d-flex justify-content-between">
+                            <span class="text-muted">Salary</span>
+                            <span class="fw-bold">{{ job.salary }}</span>
+                        </li>
+                        <li class="mb-3 d-flex justify-content-between">
+                            <span class="text-muted">Posted Date</span>
+                            <span class="fw-bold">{{ job.posted_date.strftime('%Y-%m-%d') }}</span>
+                        </li>
+                        <li class="mb-3 d-flex justify-content-between">
+                            <span class="text-muted">Deadline</span>
+                            <span class="fw-bold">{{ job.deadline.strftime('%Y-%m-%d') }}</span>
+                        </li>
+                        <li class="mb-0 d-flex justify-content-between">
+                            <span class="text-muted">Applications</span>
+                            <span class="fw-bold text-primary">{{ applications|length }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Applicants Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 border-bottom-0">
+                    <h5 class="mb-0 fw-bold">Applicants</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-4">Student Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>CGPA</th>
+                                <th>Status</th>
+                                <th class="text-end pe-4">Resume</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for app in applications %}
+                            <tr>
+                                <td class="ps-4 fw-bold">{{ app.student.name }}</td>
+                                <td>{{ app.student.email }}</td>
+                                <td>{{ app.student.department }}</td>
+                                <td>{{ app.student.cgpa }}</td>
+                                <td><span class="badge bg-secondary rounded-pill">{{ app.status }}</span></td>
+                                <td class="text-end pe-4">
+                                    {% if app.student.resume %}
+                                    <a href="{{ url_for('static', filename='uploads/resumes/' + app.student.resume) }}"
+                                        target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">View PDF</a>
+                                    {% else %}
+                                    <span class="text-muted small">No Resume</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">No applications received yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

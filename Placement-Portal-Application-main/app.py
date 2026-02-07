@@ -40,7 +40,9 @@ def create_app():
             "applications": Application.query.count()
         }
         pending_companies = Company.query.filter_by(is_approved=False).all()
-        return render_template("dashboards/admin.html", companies=pending_companies, stats=stats)
+        # Fetch ongoing drives (Approved or Pending actions)
+        jobs = JobPosition.query.order_by(JobPosition.posted_date.desc()).limit(5).all()
+        return render_template("dashboards/admin.html", companies=pending_companies, stats=stats, jobs=jobs)
 
     # --- Company Management ---
     @app.route("/admin/manage/companies")
@@ -132,12 +134,25 @@ def create_app():
     def view_applications():
         applications = Application.query.all()
         return render_template("admin/view_applications.html", applications=applications)
+    
+    @app.route("/admin/job/<int:job_id>")
+    @login_required("admin")
+    def view_job_details(job_id):
+        job = JobPosition.query.get_or_404(job_id)
+        applications = Application.query.filter_by(job_position_id=job_id).all()
+        return render_template("admin/job_details.html", job=job, applications=applications)
 
 
     @app.route("/student/dashboard")
     @login_required("student")
     def student_dashboard():
-        return render_template("dashboards/student.html")
+        # Fetch active drives (Approved jobs)
+        from datetime import date
+        active_drives = JobPosition.query.filter(
+            JobPosition.status == "Approved",
+            JobPosition.deadline >= date.today()
+        ).order_by(JobPosition.posted_date.desc()).limit(5).all()
+        return render_template("dashboards/student.html", drives=active_drives)
 
     @app.route("/student/profile", methods=["GET", "POST"])
     @login_required("student")

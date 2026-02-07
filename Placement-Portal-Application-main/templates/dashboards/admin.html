@@ -92,7 +92,8 @@
                                 {% endif %}
                             </td>
                             <td class="text-end pe-4">
-                                <a href="#" class="btn btn-sm btn-outline-primary rounded-pill px-3">View Details</a>
+                                <a href="{{ url_for('view_job_details', job_id=job.id) }}"
+                                    class="btn btn-sm btn-outline-primary rounded-pill px-3">View Details</a>
                             </td>
                         </tr>
                         {% else %}
