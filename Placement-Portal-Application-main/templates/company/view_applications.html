@@ -3,21 +3,43 @@
 {% block title %}Received Applications{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Job Applications</h2>
-    <a href="{{ url_for('company_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+
+<div class="row mb-4">
+    <div class="col">
+        <h2>Job Applications</h2>
+    </div>
+    <div class="col text-end">
+        <a href="{{ url_for('company_dashboard') }}" class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
 </div>
 
+
 {% for job in jobs %}
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-light d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">{{ job.title }} <small class="text-muted">({{ job.deadline }})</small></h5>
-        <span class="badge bg-secondary">{{ job.applications|length }} Applicants</span>
+
+<div class="card mb-4">
+
+    <div class="card-header">
+
+        <h5>
+            {{ job.title }}
+            <small>({{ job.deadline }})</small>
+        </h5>
+
+        <span class="badge bg-secondary">
+            {{ job.applications|length }} Applicants
+        </span>
+
     </div>
 
+
     {% if job.applications %}
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
+
+    <div class="card-body">
+
+        <table class="table table-bordered">
+
             <thead>
                 <tr>
                     <th>Student Name</th>
@@ -28,64 +50,95 @@
                     <th>Action</th>
                 </tr>
             </thead>
+
             <tbody>
+
                 {% for app in job.applications %}
+
                 <tr>
+
                     <td>
-                        <a href="{{ url_for('view_student_profile', student_id=app.student.id) }}"
-                            class="fw-bold text-decoration-none">
+                        <a href="{{ url_for('view_student_profile', student_id=app.student.id) }}">
                             {{ app.student.name }}
                         </a>
                     </td>
+
                     <td>{{ app.student.email }}</td>
+
                     <td>{{ app.student.cgpa }}</td>
+
                     <td>{{ app.applied_on.strftime('%Y-%m-%d') }}</td>
+
                     <td>
-                        <span
-                            class="badge {% if app.status=='Rejected' %}bg-danger{% elif app.status=='Placed' %}bg-success{% else %}bg-info{% endif %}">
-                            {{ app.status }}
+
+                        <span class="badge
+                        {% if app.status=='Rejected' %}bg-danger
+                        {% elif app.status=='Placed' %}bg-success
+                        {% else %}bg-info
+                        {% endif %}">
+
+                        {{ app.status }}
+
                         </span>
+
                     </td>
+
                     <td>
-                        <div class="dropdown">
-                            <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown">
-                                Update Status
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item"
-                                        href="{{ url_for('update_application_status', app_id=app.id, status='Shortlisted') }}">Shortlist</a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ url_for('update_application_status', app_id=app.id, status='Interview') }}">Interview</a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ url_for('update_application_status', app_id=app.id, status='Selected') }}">Select</a>
-                                </li>
-                                <li><a class="dropdown-item"
-                                        href="{{ url_for('update_application_status', app_id=app.id, status='Placed') }}">Placed</a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item text-danger"
-                                        href="{{ url_for('update_application_status', app_id=app.id, status='Rejected') }}">Reject</a>
-                                </li>
-                            </ul>
-                        </div>
+
+                        <a href="{{ url_for('update_application_status', app_id=app.id, status='Shortlisted') }}"
+                           class="btn btn-sm btn-primary">
+                           Shortlist
+                        </a>
+
+                        <a href="{{ url_for('update_application_status', app_id=app.id, status='Interview') }}"
+                           class="btn btn-sm btn-info">
+                           Interview
+                        </a>
+
+                        <a href="{{ url_for('update_application_status', app_id=app.id, status='Selected') }}"
+                           class="btn btn-sm btn-success">
+                           Select
+                        </a>
+
+                        <a href="{{ url_for('update_application_status', app_id=app.id, status='Placed') }}"
+                           class="btn btn-sm btn-success">
+                           Place
+                        </a>
+
+                        <a href="{{ url_for('update_application_status', app_id=app.id, status='Rejected') }}"
+                           class="btn btn-sm btn-danger">
+                           Reject
+                        </a>
+
                     </td>
+
                 </tr>
+
                 {% endfor %}
+
             </tbody>
+
         </table>
+
     </div>
+
     {% else %}
-    <div class="card-body text-muted text-center py-3">
+
+    <div class="card-body text-center">
         No applications yet.
     </div>
+
     {% endif %}
+
 </div>
+
+
 {% else %}
-<div class="alert alert-info">You haven't posted any jobs yet.</div>
+
+<div class="alert alert-info">
+    You haven't posted any jobs yet.
+</div>
+
 {% endfor %}
+
 {% endblock %}

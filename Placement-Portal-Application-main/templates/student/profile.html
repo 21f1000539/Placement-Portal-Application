@@ -3,59 +3,90 @@
 {% block title %}My Profile{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Edit Profile</h4>
-                <a href="{{ url_for('student_dashboard') }}" class="btn btn-sm btn-outline-secondary">Back</a>
+
+<div class="row">
+    <div class="col-md-8">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h4>Edit Profile</h4>
+                <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary">
+                    Back
+                </a>
             </div>
-            <div class="card-body p-4">
+
+            <div class="card-body">
+
                 <form method="POST" enctype="multipart/form-data">
+
                     <div class="mb-3">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" name="name" class="form-control" value="{{ student.name }}" required>
+                        <label>Full Name</label>
+                        <input type="text" name="name" class="form-control"
+                               value="{{ student.name }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" class="form-control" value="{{ student.email }}" disabled>
+                        <label>Email Address</label>
+                        <input type="email" class="form-control"
+                               value="{{ student.email }}" disabled>
                     </div>
 
                     <div class="row">
+
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Department</label>
-                            <input type="text" name="department" class="form-control" value="{{ student.department }}">
+                            <label>Department</label>
+                            <input type="text" name="department"
+                                   class="form-control"
+                                   value="{{ student.department }}">
                         </div>
+
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">CGPA</label>
-                            <input type="number" step="0.01" name="cgpa" class="form-control" value="{{ student.cgpa }}"
-                                min="0" max="10">
+                            <label>CGPA</label>
+                            <input type="number"
+                                   step="0.01"
+                                   name="cgpa"
+                                   class="form-control"
+                                   value="{{ student.cgpa }}"
+                                   min="0"
+                                   max="10">
                         </div>
+
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Resume</label>
+                        <label>Resume</label>
+
                         {% if student.resume %}
                         <div class="mb-2">
                             <a href="{{ url_for('static', filename='uploads/resumes/' + student.resume) }}"
-                                class="btn btn-sm btn-outline-primary" target="_blank">
-                                📄 View Current Resume ({{ student.resume }})
+                               class="btn btn-primary"
+                               target="_blank">
+                                View Current Resume ({{ student.resume }})
                             </a>
                         </div>
                         {% else %}
-                        <div class="text-danger mb-2">No resume uploaded!</div>
+                        <div class="mb-2">
+                            No resume uploaded.
+                        </div>
                         {% endif %}
+
                         <input type="file" name="resume" class="form-control">
-                        <div class="form-text">Upload new file to replace current resume.</div>
+
+                        <p>Upload new file to replace current resume.</p>
                     </div>
 
-                    <div class="d-grid mt-4">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        Save Changes
+                    </button>
+
                 </form>
+
             </div>
+
         </div>
+
     </div>
 </div>
+
 {% endblock %}

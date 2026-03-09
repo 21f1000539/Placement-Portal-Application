@@ -3,15 +3,26 @@
 {% block title %}All Applications{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>All Applications</h2>
-    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+
+<div class="row mb-4">
+    <div class="col">
+        <h2>All Applications</h2>
+    </div>
+    <div class="col text-end">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
 </div>
 
-<div class="card shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+
+<div class="card">
+
+    <div class="card-body">
+
+        <table class="table table-bordered">
+
+            <thead>
                 <tr>
                     <th>Student</th>
                     <th>Job Title</th>
@@ -20,29 +31,49 @@
                     <th>Date</th>
                 </tr>
             </thead>
+
             <tbody>
+
                 {% for app in applications %}
+
                 <tr>
+
                     <td>
-                        <a href="{{ url_for('view_student_profile', student_id=app.student.id) }}"
-                            class="text-decoration-none fw-bold">
+                        <a href="{{ url_for('view_student_profile', student_id=app.student.id) }}">
                             {{ app.student.name }}
                         </a>
                     </td>
+
                     <td>{{ app.job_position.title }}</td>
+
                     <td>{{ app.job_position.company.name }}</td>
+
                     <td>
-                        <span class="badge bg-secondary">{{ app.status }}</span>
+                        <span class="badge bg-secondary">
+                            {{ app.status }}
+                        </span>
                     </td>
+
                     <td>{{ app.applied_on.strftime('%Y-%m-%d') }}</td>
+
                 </tr>
+
                 {% else %}
+
                 <tr>
-                    <td colspan="5" class="text-center text-muted">No applications found.</td>
+                    <td colspan="5" class="text-center">
+                        No applications found.
+                    </td>
                 </tr>
+
                 {% endfor %}
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>
+
 {% endblock %}

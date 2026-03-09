@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="row">
+<div class="col-md-6">
+
+<div class="card">
+
+<div class="card-header">
+<h3>Login</h3>
+</div>
+
+<div class="card-body">
+
+<form method="POST" action="{{ url_for('auth.login') }}">
+
+<div class="mb-3">
+<label for="role">Role</label>
+
+<select id="role" name="role" class="form-control" required>
+<option value="student" {% if selected_role == "student" %}selected{% endif %}>Student</option>
+<option value="company" {% if selected_role == "company" %}selected{% endif %}>Company</option>
+<option value="admin" {% if selected_role == "admin" %}selected{% endif %}>Admin</option>
+</select>
+
+</div>
+
+<div class="mb-3">
+
+<label id="identifierLabel" for="identifier">Email Address</label>
+
+<input id="identifier"
+type="text"
+name="identifier"
+class="form-control"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label>Password</label>
+
+<input type="password"
+name="password"
+class="form-control"
+required>
+
+</div>
+
+<button type="submit" class="btn btn-primary">
+Login
+</button>
+
+</form>
+
+</div>
+
+<div class="card-footer">
+
+<p>
+New user?
+
+<a href="{{ url_for('auth.student_register') }}">
+Student Register
+</a>
+
+|
+
+<a href="{{ url_for('auth.company_register') }}">
+Company Register
+</a>
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<script>
+(function() {
+const roleSelect = document.getElementById("role");
+const identifierLabel = document.getElementById("identifierLabel");
+const identifierInput = document.getElementById("identifier");
+
+function syncIdentifierField() {
+if (roleSelect.value === "admin") {
+identifierLabel.textContent = "Username";
+identifierInput.placeholder = "Enter admin username";
+identifierInput.type = "text";
+} else {
+identifierLabel.textContent = "Email Address";
+identifierInput.placeholder = "Enter email address";
+identifierInput.type = "email";
+}
+}
+
+roleSelect.addEventListener("change", syncIdentifierField);
+syncIdentifierField();
+})();
+</script>
+
+{% endblock %}

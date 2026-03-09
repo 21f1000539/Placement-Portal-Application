@@ -3,192 +3,256 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="row mb-5">
+
+<div class="row mb-4">
     <div class="col-md-12">
-        <h2 class="display-6 fw-bold">Admin Dashboard</h2>
-        <p class="text-muted">System Overview and Management.</p>
+        <h2>Admin Dashboard</h2>
+        <p>System Overview and Management.</p>
     </div>
 </div>
 
-<!-- Stats Cards -->
-<div class="row g-4 mb-5">
+
+<!-- Stats -->
+<div class="row mb-4">
+
     <div class="col-md-3">
-        <div class="card text-white bg-primary h-100 shadow-sm border-0 position-relative overflow-hidden">
-            <div class="position-absolute top-0 end-0 opacity-25 p-3">
-                <i class="bi bi-building display-3"></i>
-            </div>
-            <div class="card-body position-relative z-1">
-                <h5 class="card-title opacity-75">Companies</h5>
-                <h2 class="display-4 fw-bold">{{ stats.companies }}</h2>
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <h5>Companies</h5>
+                <h3>{{ stats.companies }}</h3>
             </div>
         </div>
     </div>
+
     <div class="col-md-3">
-        <div class="card text-white bg-success h-100 shadow-sm border-0 position-relative overflow-hidden">
-            <div class="position-absolute top-0 end-0 opacity-25 p-3">
-                <i class="bi bi-people display-3"></i>
-            </div>
-            <div class="card-body position-relative z-1">
-                <h5 class="card-title opacity-75">Students</h5>
-                <h2 class="display-4 fw-bold">{{ stats.students }}</h2>
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h5>Students</h5>
+                <h3>{{ stats.students }}</h3>
             </div>
         </div>
     </div>
+
     <div class="col-md-3">
-        <div class="card text-dark bg-warning h-100 shadow-sm border-0 position-relative overflow-hidden">
-            <div class="position-absolute top-0 end-0 opacity-25 p-3">
-                <i class="bi bi-briefcase display-3"></i>
-            </div>
-            <div class="card-body position-relative z-1">
-                <h5 class="card-title opacity-75">Drives</h5>
-                <h2 class="display-4 fw-bold">{{ stats.jobs }}</h2>
+        <div class="card bg-warning">
+            <div class="card-body">
+                <h5>Drives</h5>
+                <h3>{{ stats.jobs }}</h3>
             </div>
         </div>
     </div>
+
     <div class="col-md-3">
-        <div class="card text-white bg-info h-100 shadow-sm border-0 position-relative overflow-hidden">
-            <div class="position-absolute top-0 end-0 opacity-25 p-3">
-                <i class="bi bi-file-earmark-check display-3"></i>
-            </div>
-            <div class="card-body position-relative z-1">
-                <h5 class="card-title opacity-75">Applications</h5>
-                <h2 class="display-4 fw-bold">{{ stats.applications }}</h2>
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <h5>Applications</h5>
+                <h3>{{ stats.applications }}</h3>
             </div>
         </div>
     </div>
-</div>
 
 </div>
 
-<!-- Recent/Ongoing Drives -->
-<div class="row mb-5">
+
+<!-- Ongoing Drives -->
+<div class="row mb-4">
+
     <div class="col-md-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white border-bottom-0 py-3 d-flex align-items-center">
-                <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-activity me-2"></i>Ongoing Placement Drives</h5>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h5>Ongoing Placement Drives</h5>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+
+            <div class="card-body">
+
+                <table class="table table-bordered">
+
+                    <thead>
                         <tr>
-                            <th class="ps-4">Drive Name</th>
+                            <th>Drive Name</th>
                             <th>Company</th>
                             <th>Posted Date</th>
                             <th>Status</th>
-                            <th class="text-end pe-4">Actions</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
+
                         {% for job in jobs %}
+
                         <tr>
-                            <td class="ps-4 fw-bold">{{ job.title }}</td>
+
+                            <td>{{ job.title }}</td>
+
                             <td>{{ job.company.name }}</td>
+
                             <td>{{ job.posted_date.strftime('%Y-%m-%d') }}</td>
+
                             <td>
+
                                 {% if job.status == 'Approved' %}
-                                <span class="badge bg-success rounded-pill px-2">Active</span>
+
+                                <span class="badge bg-success">
+                                    Active
+                                </span>
+
                                 {% else %}
-                                <span class="badge bg-warning text-dark rounded-pill px-2">{{ job.status }}</span>
+
+                                <span class="badge bg-warning text-dark">
+                                    {{ job.status }}
+                                </span>
+
                                 {% endif %}
+
                             </td>
-                            <td class="text-end pe-4">
+
+                            <td>
+
                                 <a href="{{ url_for('view_job_details', job_id=job.id) }}"
-                                    class="btn btn-sm btn-outline-primary rounded-pill px-3">View Details</a>
+                                   class="btn btn-sm btn-primary">
+                                   View Details
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                No ongoing drives.
                             </td>
                         </tr>
-                        {% else %}
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">No ongoing drives.</td>
-                        </tr>
+
                         {% endfor %}
+
                     </tbody>
+
                 </table>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- Pending Approvals -->
-<div class="row mb-5">
+
+<!-- Pending Company Approvals -->
+
+<div class="row mb-4">
+
     <div class="col-md-12">
-        <div class="card shadow-sm border-0">
-            <div class="card-header bg-white border-bottom-0 py-3 d-flex align-items-center">
-                <h5 class="mb-0 fw-bold text-danger"><i class="bi bi-exclamation-circle me-2"></i>Pending Company
-                    Approvals</h5>
+
+        <div class="card">
+
+            <div class="card-header">
+                <h5>Pending Company Approvals</h5>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
+
+            <div class="card-body">
+
+                <table class="table table-bordered">
+
+                    <thead>
                         <tr>
-                            <th class="ps-4">Company Name</th>
+                            <th>Company Name</th>
                             <th>Email</th>
                             <th>Website</th>
-                            <th class="text-end pe-4">Actions</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
+
                     <tbody>
+
                         {% for company in companies %}
+
                         <tr>
-                            <td class="ps-4 fw-bold">{{ company.name }}</td>
+
+                            <td>{{ company.name }}</td>
+
                             <td>{{ company.email }}</td>
-                            <td><a href="{{ company.website }}" target="_blank" class="text-secondary"><i
-                                        class="bi bi-link-45deg me-1"></i>Link</a></td>
-                            <td class="text-end pe-4">
+
+                            <td>
+                                <a href="{{ company.website }}" target="_blank">
+                                    Website
+                                </a>
+                            </td>
+
+                            <td>
+
                                 <a href="{{ url_for('approve_company', company_id=company.id) }}"
-                                    class="btn btn-sm btn-success rounded-pill px-3">
-                                    <i class="bi bi-check-lg me-1"></i>Approve
+                                   class="btn btn-sm btn-success">
+                                   Approve
                                 </a>
+
                                 <a href="{{ url_for('approve_company_action', company_id=company.id, action='reject') }}"
-                                    class="btn btn-sm btn-danger rounded-pill px-3">
-                                    <i class="bi bi-x-lg me-1"></i>Reject
+                                   class="btn btn-sm btn-danger">
+                                   Reject
                                 </a>
+
                             </td>
+
                         </tr>
+
                         {% else %}
+
                         <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">
-                                <i class="bi bi-check-circle fs-1 d-block mb-3 opacity-50"></i>
-                                All clear! No pending approvals.
+                            <td colspan="4" class="text-center">
+                                No pending approvals.
                             </td>
                         </tr>
+
                         {% endfor %}
+
                     </tbody>
+
                 </table>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
-<!-- Management Links -->
-<h4 class="mb-3 fw-bold">Quick Management</h4>
-<div class="row g-3">
-    <div class="col-md-3">
-        <a href="{{ url_for('manage_companies') }}"
-            class="btn btn-white border shadow-sm w-100 py-3 h-100 d-flex flex-column align-items-center justify-content-center text-decoration-none text-dark transition-hover">
-            <i class="bi bi-building fs-2 text-primary mb-2"></i>
-            <span class="fw-bold">Manage Companies</span>
+
+<!-- Quick Management -->
+
+<h4 class="mb-3">Quick Management</h4>
+
+<div class="row">
+
+    <div class="col-md-3 mb-3">
+        <a href="{{ url_for('manage_companies') }}" class="btn btn-primary w-100">
+            Manage Companies
         </a>
     </div>
-    <div class="col-md-3">
-        <a href="{{ url_for('manage_students') }}"
-            class="btn btn-white border shadow-sm w-100 py-3 h-100 d-flex flex-column align-items-center justify-content-center text-decoration-none text-dark transition-hover">
-            <i class="bi bi-people fs-2 text-success mb-2"></i>
-            <span class="fw-bold">Manage Students</span>
+
+    <div class="col-md-3 mb-3">
+        <a href="{{ url_for('manage_students') }}" class="btn btn-success w-100">
+            Manage Students
         </a>
     </div>
-    <div class="col-md-3">
-        <a href="{{ url_for('manage_jobs') }}"
-            class="btn btn-white border shadow-sm w-100 py-3 h-100 d-flex flex-column align-items-center justify-content-center text-decoration-none text-dark transition-hover">
-            <i class="bi bi-briefcase fs-2 text-warning mb-2"></i>
-            <span class="fw-bold">Manage Jobs</span>
+
+    <div class="col-md-3 mb-3">
+        <a href="{{ url_for('manage_jobs') }}" class="btn btn-warning w-100">
+            Manage Jobs
         </a>
     </div>
-    <div class="col-md-3">
-        <a href="{{ url_for('view_applications') }}"
-            class="btn btn-white border shadow-sm w-100 py-3 h-100 d-flex flex-column align-items-center justify-content-center text-decoration-none text-dark transition-hover">
-            <i class="bi bi-file-earmark-check fs-2 text-info mb-2"></i>
-            <span class="fw-bold">View Applications</span>
+
+    <div class="col-md-3 mb-3">
+        <a href="{{ url_for('view_applications') }}" class="btn btn-info w-100">
+            View Applications
         </a>
     </div>
+
 </div>
+
 {% endblock %}

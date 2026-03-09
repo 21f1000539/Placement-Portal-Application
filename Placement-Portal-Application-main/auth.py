@@ -67,27 +67,66 @@ def student_register():
         db.session.commit()
 
         flash("Registration successful. Please login.")
-        return redirect(url_for("auth.student_login"))
+        return redirect(url_for("auth.login", role="student"))
 
     return render_template("student_register.html")
 
 
-@auth_bp.route("/login/student", methods=["GET", "POST"])
-def student_login():
+@auth_bp.route("/login", methods=["GET", "POST"])
+def login():
+    selected_role = request.args.get("role", "student")
+
     if request.method == "POST":
-        student = Student.query.filter_by(email=request.form["email"]).first()
+        role = request.form.get("role", "student")
+        password = request.form["password"]
+        selected_role = role
 
-        if student and check_password_hash(student.password, request.form["password"]):
-            if not student.is_active:
-                flash("Account deactivated by admin.")
-                return redirect(url_for("auth.student_login"))
-            
-            session["user_id"] = student.id
-            session["role"] = "student"
-            return redirect(url_for("student_dashboard"))
+        if role == "student":
+            student = Student.query.filter_by(email=request.form["identifier"]).first()
+            if student and check_password_hash(student.password, password):
+                if not student.is_active:
+                    flash("Account deactivated by admin.")
+                    return redirect(url_for("auth.login", role="student"))
 
-        flash("Invalid credentials")
-    return render_template("student_login.html")
+                session["user_id"] = student.id
+                session["role"] = "student"
+                return redirect(url_for("student_dashboard"))
+            flash("Invalid credentials")
+
+        elif role == "company":
+            company = Company.query.filter_by(email=request.form["identifier"]).first()
+            if not company:
+                flash("Invalid credentials")
+                return redirect(url_for("auth.login", role="company"))
+
+            if not company.is_approved:
+                flash("Company not approved by admin yet")
+                return redirect(url_for("auth.login", role="company"))
+
+            if check_password_hash(company.password, password):
+                session["user_id"] = company.id
+                session["role"] = "company"
+                return redirect(url_for("company_dashboard"))
+
+            flash("Invalid credentials")
+
+        elif role == "admin":
+            admin = Admin.query.filter_by(username=request.form["identifier"]).first()
+            if admin and check_password_hash(admin.password, password):
+                session["user_id"] = admin.id
+                session["role"] = "admin"
+                return redirect(url_for("admin_dashboard"))
+            flash("Invalid admin credentials")
+
+        else:
+            flash("Invalid role selected")
+
+    return render_template("login.html", selected_role=selected_role)
+
+
+@auth_bp.route("/login/student", methods=["GET"])
+def student_login():
+    return redirect(url_for("auth.login", role="student"))
 
 
 @auth_bp.route("/register/company", methods=["GET", "POST"])
@@ -132,47 +171,19 @@ def company_register():
         db.session.commit()
 
         flash("Registration submitted. Await admin approval.")
-        return redirect(url_for("auth.company_login"))
+        return redirect(url_for("auth.login", role="company"))
 
     return render_template("company_register.html")
 
 
-@auth_bp.route("/login/company", methods=["GET", "POST"])
+@auth_bp.route("/login/company", methods=["GET"])
 def company_login():
-    if request.method == "POST":
-        company = Company.query.filter_by(email=request.form["email"]).first()
-
-        if not company:
-            flash("Invalid credentials")
-            return redirect(url_for("auth.company_login"))
-
-        if not company.is_approved:
-            flash("Company not approved by admin yet")
-            return redirect(url_for("auth.company_login"))
-
-        if check_password_hash(company.password, request.form["password"]):
-            session["user_id"] = company.id
-            session["role"] = "company"
-            return redirect(url_for("company_dashboard"))
-
-        flash("Invalid credentials")
-
-    return render_template("company_login.html")
+    return redirect(url_for("auth.login", role="company"))
 
 
-@auth_bp.route("/login/admin", methods=["GET", "POST"])
+@auth_bp.route("/login/admin", methods=["GET"])
 def admin_login():
-    if request.method == "POST":
-        admin = Admin.query.filter_by(username=request.form["username"]).first()
-
-        if admin and check_password_hash(admin.password, request.form["password"]):
-            session["user_id"] = admin.id
-            session["role"] = "admin"
-            return redirect(url_for("admin_dashboard"))
-
-        flash("Invalid admin credentials")
-
-    return render_template("admin_login.html")
+    return redirect(url_for("auth.login", role="admin"))
 
 
 @auth_bp.route("/logout")

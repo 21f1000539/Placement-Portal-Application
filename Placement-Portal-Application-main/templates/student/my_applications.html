@@ -3,15 +3,26 @@
 {% block title %}My Applications{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>My Applications</h2>
-    <a href="{{ url_for('student_dashboard') }}" class="btn btn-outline-secondary">Back to Dashboard</a>
+
+<div class="row mb-4">
+    <div class="col">
+        <h2>My Applications</h2>
+    </div>
+    <div class="col text-end">
+        <a href="{{ url_for('student_dashboard') }}" class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
 </div>
 
-<div class="card shadow-sm">
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light">
+
+<div class="card">
+
+    <div class="card-body">
+
+        <table class="table table-bordered">
+
+            <thead>
                 <tr>
                     <th>Job Title</th>
                     <th>Company</th>
@@ -19,33 +30,73 @@
                     <th>Current Status</th>
                 </tr>
             </thead>
+
             <tbody>
+
                 {% for app in applications %}
+
                 <tr>
-                    <td class="fw-bold">{{ app.job_position.title }}</td>
+
+                    <td>{{ app.job_position.title }}</td>
+
                     <td>{{ app.job_position.company.name }}</td>
+
                     <td>{{ app.applied_on.strftime('%Y-%m-%d') }}</td>
+
                     <td>
+
                         {% if app.status == 'Applied' %}
-                        <span class="badge bg-primary">Applied</span>
+
+                        <span class="badge bg-primary">
+                            Applied
+                        </span>
+
                         {% elif app.status == 'Shortlisted' or app.status == 'Interview' %}
-                        <span class="badge bg-warning text-dark">{{ app.status }}</span>
+
+                        <span class="badge bg-warning text-dark">
+                            {{ app.status }}
+                        </span>
+
                         {% elif app.status == 'Selected' or app.status == 'Placed' %}
-                        <span class="badge bg-success">{{ app.status }}</span>
+
+                        <span class="badge bg-success">
+                            {{ app.status }}
+                        </span>
+
                         {% elif app.status == 'Rejected' %}
-                        <span class="badge bg-danger">Rejected</span>
+
+                        <span class="badge bg-danger">
+                            Rejected
+                        </span>
+
                         {% else %}
-                        <span class="badge bg-secondary">{{ app.status }}</span>
+
+                        <span class="badge bg-secondary">
+                            {{ app.status }}
+                        </span>
+
                         {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="4" class="text-center">
+                        You haven't applied to any jobs yet.
                     </td>
                 </tr>
-                {% else %}
-                <tr>
-                    <td colspan="4" class="text-center py-4 text-muted">You haven't applied to any jobs yet.</td>
-                </tr>
+
                 {% endfor %}
+
             </tbody>
+
         </table>
+
     </div>
+
 </div>
+
 {% endblock %}

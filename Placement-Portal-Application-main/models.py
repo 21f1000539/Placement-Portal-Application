@@ -9,7 +9,6 @@ class Admin(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -94,6 +93,3 @@ class Placement(db.Model):
     # This table might be redundant if we strictly use Application, but kept for clarity/analytics.
     
     placed_on = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-
